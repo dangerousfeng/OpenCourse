@@ -24,7 +24,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
-import Adapter.ViewPagerAdapter;
+import com.feng.opencourse.adapter.ViewPagerAdapter;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

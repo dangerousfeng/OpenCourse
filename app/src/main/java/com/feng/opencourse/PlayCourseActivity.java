@@ -3,6 +3,8 @@ package com.feng.opencourse;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.feng.opencourse.R;
+
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
 
