@@ -297,7 +297,7 @@ public class HomeActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             Intent to_second = new Intent();
-            to_second.setClass(HomeActivity.this,SecondActivity.class);
+            to_second.setClass(HomeActivity.this,PlayCourseActivity.class);
             startActivity(to_second);
 
         } else if (id == R.id.nav_gallery) {
