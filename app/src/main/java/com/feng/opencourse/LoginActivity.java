@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,8 +31,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.feng.opencourse.util.HttpUtil;
+import com.feng.opencourse.util.MyApplication;
+import com.feng.opencourse.util.ProperTies;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
+import okhttp3.Call;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -151,10 +163,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private String attemptLogin() {
-        jwt = "123456";
-        if (!jwt.isEmpty()){
-            return jwt;
-        }
+//        jwt = "123456";
+//        if (!jwt.isEmpty()){
+//            return jwt;
+//        }
         if (mAuthTask != null) {
             return "";
         }
@@ -319,10 +331,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-
             try {
                 // Simulate network access.
                 Thread.sleep(2000);
+                RequestBody requestBody = new FormBody.Builder()
+                        .add("ActionId","101")
+                        .add("email",mEmail)
+                        .add("password",mPassword)
+                        .build();
+                HttpUtil.sendHttpRequest(requestBody,new okhttp3.Callback(){
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Log.e("network error","login");
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String responseData = response.body().string();
+                        Log.i("print",responseData);
+                    }
+                });
             } catch (InterruptedException e) {
                 return false;
             }
