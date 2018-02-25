@@ -31,17 +31,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.feng.opencourse.entity.User;
 import com.feng.opencourse.util.HttpUtil;
+import com.feng.opencourse.util.JsonUtil;
 import com.feng.opencourse.util.MyApplication;
 import com.feng.opencourse.util.ProperTies;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
 import okhttp3.Call;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
@@ -100,12 +106,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent();
-                intent.setClass(LoginActivity.this,HomeActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putString("jwt",attemptLogin());
-                intent.putExtras(bundle);
-                startActivity(intent);
+                attemptLogin();
             }
         });
 
@@ -322,6 +323,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private String jwt = "null jwt";
 
         UserLoginTask(String email, String password) {
             mEmail = email;
@@ -332,38 +334,41 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-                RequestBody requestBody = new FormBody.Builder()
-                        .add("ActionId","101")
-                        .add("email",mEmail)
-                        .add("password",mPassword)
-                        .build();
-                HttpUtil.sendHttpRequest(requestBody,new okhttp3.Callback(){
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        Log.e("network error","login");
+                // 登录请求
+                JSONObject loginReq = new JSONObject();
+                loginReq.put("ActionId",101);
+                loginReq.put("JWT","this is jwt");
+                loginReq.put("email",mEmail);
+                loginReq.put("password",mPassword);
+                RequestBody loginReqBody = RequestBody.create( MediaType.parse("application/json; charset=utf-8"), loginReq.toString());
+                String loginRespData = HttpUtil.sendSyncRequest(loginReqBody);
+                if (loginRespData == null){
+                    JSONObject registerReq = new JSONObject();
+                    registerReq.put("superRole",false);
+                    registerReq.put("ActionId",100);
+                    registerReq.put("JWT","this is jwt");
+                    registerReq.put("email",mEmail);
+                    registerReq.put("password",mPassword);
+                    RequestBody registerReqBody = RequestBody.create( MediaType.parse("application/json; charset=utf-8"), registerReq.toString());
+                    String registerRespData = HttpUtil.sendSyncRequest(registerReqBody);
+                    if (registerRespData == null){
+                        Log.e("register error","注册失败");
+                    }else {
+                        loginRespData = registerRespData;
                     }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String responseData = response.body().string();
-                        Log.i("print",responseData);
-                    }
-                });
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
+                    System.out.println("register");
                 }
-            }
 
-            // TODO: register the new account here.
+                JSONObject loginRespJson= new JSONObject(loginRespData);
+                String userData = loginRespJson.optString("userData");
+                String userBase = loginRespJson.optString("userBase");
+                System.out.println("userData="+userData);
+                System.out.println("userBase="+userBase);
+
+
+            } catch (JSONException | IOException e){
+                e.printStackTrace();
+            }
             return true;
         }
 
@@ -373,6 +378,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+                Intent intent=new Intent();
+                intent.setClass(LoginActivity.this,HomeActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putString("jwt",jwt);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
