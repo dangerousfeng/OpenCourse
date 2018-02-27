@@ -31,7 +31,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.alibaba.sdk.android.oss.common.auth.OSSFederationToken;
+import com.feng.opencourse.entity.StsToken;
 import com.feng.opencourse.entity.User;
+import com.feng.opencourse.entity.UserBase;
+import com.feng.opencourse.entity.UserData;
 import com.feng.opencourse.util.HttpUtil;
 import com.feng.opencourse.util.JsonUtil;
 import com.feng.opencourse.util.MyApplication;
@@ -323,7 +327,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
-        private String jwt = "null jwt";
+        private String JWT = "null jwt";
+        private UserData userData;
+        private UserBase userBase;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
@@ -360,11 +366,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
 
                 JSONObject loginRespJson= new JSONObject(loginRespData);
-                String userData = loginRespJson.optString("userData");
-                String userBase = loginRespJson.optString("userBase");
-                System.out.println("userData="+userData);
-                System.out.println("userBase="+userBase);
+                MyApplication myapp = (MyApplication) getApplication();
+                Gson gson = new Gson();
 
+                //全局 sts只读
+                String readOnlyStsStr = loginRespJson.optString("stsReadOnly");
+                StsToken readOnlyStsToken = gson.fromJson(readOnlyStsStr,StsToken.class);
+                OSSFederationToken readOnlyOSSFederationToken = new OSSFederationToken(
+                        readOnlyStsToken.getAccessKeyId(),
+                        readOnlyStsToken.getAccessKeySecret(),
+                        readOnlyStsToken.getSecurityToken(),
+                        readOnlyStsToken.getExpiration());
+                myapp.setReadOnlyOSSFederationToken(readOnlyOSSFederationToken);
+                //全局 sts只写
+                String writeOnlyStsStr = loginRespJson.optString("stsWriteOnly");
+                if (!writeOnlyStsStr.equals("")){
+                    StsToken writeOnlyStsToken = gson.fromJson(writeOnlyStsStr,StsToken.class);
+                    OSSFederationToken writeOnlyOSSFederationToken = new OSSFederationToken(
+                            writeOnlyStsToken.getAccessKeyId(),
+                            writeOnlyStsToken.getAccessKeySecret(),
+                            writeOnlyStsToken.getSecurityToken(),
+                            writeOnlyStsToken.getExpiration());
+                    myapp.setWriteOnlyOSSFederationToken(writeOnlyOSSFederationToken);
+                }
+                //全局 JWT
+                JWT = loginRespJson.optString("JWT");
+                myapp.setJWT(JWT);
+
+                // UserData
+                String userDataStr = loginRespJson.optString("userData");
+                userData = gson.fromJson(userDataStr, UserData.class);
+                // UserBase
+                String userBaseStr = loginRespJson.optString("userBase");
+                userBase = gson.fromJson(userBaseStr,UserBase.class);
 
             } catch (JSONException | IOException e){
                 e.printStackTrace();
@@ -381,7 +415,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Intent intent=new Intent();
                 intent.setClass(LoginActivity.this,HomeActivity.class);
                 Bundle bundle=new Bundle();
-                bundle.putString("jwt",jwt);
+                bundle.putSerializable("userData",userData);
+                bundle.putSerializable("userBase",userBase);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 finish();

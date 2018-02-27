@@ -25,6 +25,9 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 import com.feng.opencourse.adapter.ViewPagerAdapter;
+import com.feng.opencourse.entity.UserBase;
+import com.feng.opencourse.entity.UserData;
+import com.feng.opencourse.util.MyApplication;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,6 +44,9 @@ public class HomeActivity extends AppCompatActivity
 
     // 在values文件假下创建了pager_image_ids.xml文件，并定义了4张轮播图对应的id，用于点击事件
     private int[] imgae_ids = new int[]{R.id.pager_image1,R.id.pager_image2,R.id.pager_image3,R.id.pager_image4};
+
+    private UserData userData;
+    private UserBase userBase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +72,23 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View headerView = navigationView.getHeaderView(0);
+        ImageView iv_avatar = (ImageView) headerView.findViewById(R.id.iv_avatar);
+        TextView tv_userName = (TextView) headerView.findViewById(R.id.tv_userName);
+        System.out.println("===================="+tv_userName.getText());
+        TextView tv_email = (TextView) headerView.findViewById(R.id.tv_email);
 
-        // 登录传递jwt过来
-        Bundle bundle=this.getIntent().getExtras();
-        String jwt = bundle.getString("jwt");
+        // 全局获取jwt过来
+        MyApplication myapp = (MyApplication) getApplication();
+        String jwt = myapp.getJWT();
         Toast.makeText(this, jwt, Toast.LENGTH_SHORT).show();
+
+        // 登录传递
+        Bundle bundle=this.getIntent().getExtras();
+        userBase = (UserBase) bundle.getSerializable("userBase");
+        userData = (UserData) bundle.getSerializable("userData");
+        tv_userName.setText(userData.getNickname());
+        tv_email.setText(userBase.getEmail());
 
         // 轮播标题
         initRollViewPager();

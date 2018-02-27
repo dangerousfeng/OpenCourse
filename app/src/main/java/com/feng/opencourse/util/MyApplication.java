@@ -7,6 +7,8 @@ package com.feng.opencourse.util;
 import android.app.Application;
 import android.content.Context;
 
+import com.alibaba.sdk.android.oss.common.auth.OSSFederationToken;
+
 /**
  * 编写自己的Application，管理全局状态信息，比如Context
  * @author yy
@@ -14,6 +16,10 @@ import android.content.Context;
  */
 public class MyApplication extends Application {
     private static Context context;
+    private String JWT;
+    private String userId;
+    private OSSFederationToken readOnlyOSSFederationToken;
+    private OSSFederationToken writeOnlyOSSFederationToken;
 
     @Override
     public void onCreate() {
@@ -21,10 +27,45 @@ public class MyApplication extends Application {
         context = getApplicationContext();
     }
 
+    public OSSFederationToken getReadOnlyOSSFederationToken() {
+        return readOnlyOSSFederationToken;
+    }
+
+    public void setReadOnlyOSSFederationToken(OSSFederationToken readOnlyOSSFederationToken) {
+        this.readOnlyOSSFederationToken = readOnlyOSSFederationToken;
+    }
+
+    public OSSFederationToken getWriteOnlyOSSFederationToken() {
+        return writeOnlyOSSFederationToken;
+    }
+
+    public void setWriteOnlyOSSFederationToken(OSSFederationToken writeOnlyOSSFederationToken) {
+        this.writeOnlyOSSFederationToken = writeOnlyOSSFederationToken;
+    }
+
     //返回
     public static Context getContextObject(){
+
         return context;
+
     }
+    public String getJWT() {
+        return JWT;
+    }
+
+    public void setJWT(String JWT) {
+        this.JWT = JWT;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+
 }
 
 //MyApplication.getContextObject();
