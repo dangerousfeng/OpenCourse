@@ -37,7 +37,7 @@
             android:name=".PlayCourseActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
-
+        <activity android:name=".CreateCourseActivity"></activity>
     </application>
 
 </manifest>

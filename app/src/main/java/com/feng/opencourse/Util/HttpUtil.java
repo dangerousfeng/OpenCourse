@@ -54,7 +54,7 @@ public class HttpUtil {
     }
 
     // 返回响应的body,jsonObject类型
-    private static String  getRespData(okhttp3.Response resp) throws IOException, JSONException{
+    public static String  getRespData(okhttp3.Response resp) throws IOException, JSONException{
 
         String responseData =  resp.body().string();
         JSONObject jsonResp = new JSONObject(responseData);

@@ -319,7 +319,9 @@ public class HomeActivity extends AppCompatActivity
             startActivity(to_second);
 
         } else if (id == R.id.nav_gallery) {
-
+            Intent toCreateCourse = new Intent();
+            toCreateCourse.setClass(HomeActivity.this,CreateCourseActivity.class);
+            startActivity(toCreateCourse);
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {

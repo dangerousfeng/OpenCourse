@@ -27,7 +27,6 @@ public class TestOkHttp {
         JSONObject json = new JSONObject();
         try {
             json.put("ActionId", 101);
-
             json.put("JWT", "this is jwt");
             json.put("email", "email");
             json.put("password", "password");
