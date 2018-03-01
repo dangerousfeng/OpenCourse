@@ -13,6 +13,7 @@
     tools:context="com.feng.opencourse.CreateCourseActivity"
     android:weightSum="1">
 
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,7 +73,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="添加课程描述信息"
+        android:hint="添加课程描述信息"
         android:ems="10"
         android:id="@+id/et_courseDesc"
         android:layout_weight="0.35" />

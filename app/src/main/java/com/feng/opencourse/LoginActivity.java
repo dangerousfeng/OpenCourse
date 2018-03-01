@@ -92,9 +92,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView.setText("qwer@qq.com");
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView.setText("123456");
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -399,10 +401,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // UserBase
                 String userBaseStr = loginRespJson.optString("userBase");
                 userBase = gson.fromJson(userBaseStr,UserBase.class);
+                myapp.setUserId(userBase.getUserId());
 
             } catch (JSONException | IOException e){
                 e.printStackTrace();
             }
+            System.out.println("====login finish===");
             return true;
         }
 

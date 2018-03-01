@@ -9,10 +9,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -25,6 +28,7 @@ import com.alibaba.sdk.android.oss.OSS;
 import com.alibaba.sdk.android.oss.OSSClient;
 import com.feng.opencourse.util.HttpUtil;
 import com.feng.opencourse.util.MyApplication;
+import com.feng.opencourse.util.PermissionsChecker;
 import com.feng.opencourse.util.ProperTies;
 
 import org.json.JSONException;
@@ -32,7 +36,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Properties;
-
+import android.support.v7.widget.Toolbar;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -51,23 +55,58 @@ public class CreateCourseActivity extends AppCompatActivity {
     private String courseFacePath = null;
     private int courseType;
     private MyApplication myapp;
+    private static final int REQUEST_CODE = 0; // 请求码
+    // 所需的全部权限
+    static final String[] PERMISSIONS = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+    private Toolbar mTToolbar;
+    private PermissionsChecker mPermissionsChecker; // 权限检测器
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_course);
+
         findViews();
+        myapp = (MyApplication) getApplication();
+        setSupportActionBar(mTToolbar);
+        mPermissionsChecker = new PermissionsChecker(this);
+
         spinnerType.setOnItemSelectedListener(spinnerTypeSelectListener);
         btnCreateCourse.setOnClickListener(createOnClickListener);
         ivCourseFace.setOnClickListener(courseFaceOnClickListener);
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 缺少权限时, 进入权限配置页面
+        if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
+            startPermissionsActivity();
+        }
+    }
+    private void startPermissionsActivity() {
+        PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
+    }
+
+
     void findViews(){
         ivCourseFace = (ImageView) findViewById(R.id.iv_courseFace);
         etCourseName = (EditText) findViewById(R.id.et_courseName);
         spinnerType = (Spinner) findViewById(R.id.spinner_courseType);
+
         etCourseDesc = (EditText) findViewById(R.id.et_courseDesc);
+        etCourseDesc.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        etCourseDesc.setGravity(Gravity.TOP);
+        etCourseDesc.setSingleLine(false);
+        etCourseDesc.setHorizontallyScrolling(false);
+
         btnCreateCourse = (Button) findViewById(R.id.btn_create);
+        mTToolbar = (Toolbar) findViewById(R.id.main_t_toolbar);
 
     }
     View.OnClickListener courseFaceOnClickListener = new View.OnClickListener() {
@@ -97,6 +136,7 @@ public class CreateCourseActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             JSONObject json = new JSONObject();
+            System.out.println("======="+myapp.getUserId());
             try {
                 json.put("ActionId", 200);
                 json.put("JWT", myapp.getJWT());
@@ -156,8 +196,8 @@ public class CreateCourseActivity extends AppCompatActivity {
                         courseFacePath = cursor.getString(columnIndex);  //获取照片路径
                         cursor.close();
                         Bitmap originalBitmap = BitmapFactory.decodeFile(courseFacePath);
-                        Bitmap bitmap = zoomBitmap(originalBitmap,ivCourseFace.getWidth(), ivCourseFace.getHeight());
-                        ivCourseFace.setImageBitmap(bitmap);
+                        //Bitmap bitmap = zoomBitmap(originalBitmap,ivCourseFace.getWidth(), ivCourseFace.getHeight());
+                        ivCourseFace.setImageBitmap(originalBitmap);
 
                     } catch (Exception e) {
                         // TODO Auto-generatedcatch block
@@ -165,6 +205,10 @@ public class CreateCourseActivity extends AppCompatActivity {
                     }
                 }
                 break;
+            case REQUEST_CODE:
+                if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+                    finish();
+                }
         }
     }
     /**
