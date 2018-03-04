@@ -7,7 +7,9 @@ package com.feng.opencourse.util;
 import android.app.Application;
 import android.content.Context;
 
+import com.alibaba.sdk.android.oss.common.auth.OSSCredentialProvider;
 import com.alibaba.sdk.android.oss.common.auth.OSSFederationToken;
+import com.alibaba.sdk.android.oss.common.auth.OSSStsTokenCredentialProvider;
 
 /**
  * 编写自己的Application，管理全局状态信息，比如Context
@@ -30,6 +32,14 @@ public class MyApplication extends Application {
     public OSSFederationToken getReadOnlyOSSFederationToken() {
         return readOnlyOSSFederationToken;
     }
+    public OSSCredentialProvider getReadOnlyOSSCredentialProvider() {
+
+        OSSCredentialProvider credentialProvider = new OSSStsTokenCredentialProvider(
+                readOnlyOSSFederationToken.getTempAK(),
+                readOnlyOSSFederationToken.getTempSK(),
+                readOnlyOSSFederationToken.getSecurityToken());
+        return credentialProvider;
+    }
 
     public void setReadOnlyOSSFederationToken(OSSFederationToken readOnlyOSSFederationToken) {
         this.readOnlyOSSFederationToken = readOnlyOSSFederationToken;
@@ -37,6 +47,14 @@ public class MyApplication extends Application {
 
     public OSSFederationToken getWriteOnlyOSSFederationToken() {
         return writeOnlyOSSFederationToken;
+    }
+    public OSSCredentialProvider getWriteOnlyOSSCredentialProvider() {
+
+        OSSCredentialProvider credentialProvider = new OSSStsTokenCredentialProvider(
+                writeOnlyOSSFederationToken.getTempAK(),
+                writeOnlyOSSFederationToken.getTempSK(),
+                writeOnlyOSSFederationToken.getSecurityToken());
+        return credentialProvider;
     }
 
     public void setWriteOnlyOSSFederationToken(OSSFederationToken writeOnlyOSSFederationToken) {
