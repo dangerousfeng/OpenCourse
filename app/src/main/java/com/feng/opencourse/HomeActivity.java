@@ -315,7 +315,7 @@ public class HomeActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             Intent to_second = new Intent();
-            to_second.setClass(HomeActivity.this,PlayCourseActivity.class);
+            to_second.setClass(HomeActivity.this,PlaySectionActivity.class);
             startActivity(to_second);
 
         } else if (id == R.id.nav_gallery) {
@@ -323,7 +323,9 @@ public class HomeActivity extends AppCompatActivity
             toCreateCourse.setClass(HomeActivity.this,CreateCourseActivity.class);
             startActivity(toCreateCourse);
         } else if (id == R.id.nav_slideshow) {
-
+            Intent toCreateCourse = new Intent();
+            toCreateCourse.setClass(HomeActivity.this,CourseDetailActivity.class);
+            startActivity(toCreateCourse);
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {

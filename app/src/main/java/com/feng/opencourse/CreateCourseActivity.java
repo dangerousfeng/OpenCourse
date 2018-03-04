@@ -203,6 +203,11 @@ public class CreateCourseActivity extends AppCompatActivity {
                                 }
                             });
                             System.out.println("===这里跳转到空的课程详情页====");
+                            Intent intent = new Intent();
+                            intent.setClass(CreateCourseActivity.this,PlaySectionActivity.class);
+                            intent.putExtra("courseFacePath",courseFacePath);
+                            startActivity(intent);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
