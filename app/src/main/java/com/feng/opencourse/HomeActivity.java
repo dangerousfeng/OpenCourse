@@ -323,9 +323,9 @@ public class HomeActivity extends AppCompatActivity
             toCreateCourse.setClass(HomeActivity.this,CreateCourseActivity.class);
             startActivity(toCreateCourse);
         } else if (id == R.id.nav_slideshow) {
-            Intent toCreateCourse = new Intent();
-            toCreateCourse.setClass(HomeActivity.this,CourseDetailActivity.class);
-            startActivity(toCreateCourse);
+            Intent toCourseDetail = new Intent();
+            toCourseDetail.setClass(HomeActivity.this,CourseDetailActivity.class);
+            startActivity(toCourseDetail);
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {

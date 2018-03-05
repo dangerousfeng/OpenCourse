@@ -13,17 +13,21 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="60dp">
 
             <TextView
                 android:text="Name"
-                android:layout_width="wrap_content"
+                android:textSize="26sp"
+                android:gravity="center_vertical|left"
+                android:layout_width="140dp"
                 android:layout_height="match_parent"
                 android:id="@+id/textView1"
                 android:layout_weight="0.2"/>
             <TextView
                 android:text="Name"
-                android:layout_width="wrap_content"
+                android:textSize="26sp"
+                android:gravity="center_vertical|left"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/tv_name"
                 android:layout_weight="0.8" />
@@ -31,16 +35,20 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="60dp">
             <TextView
                 android:text="Teacher"
-                android:layout_width="wrap_content"
+                android:textSize="26sp"
+                android:gravity="center_vertical|left"
+                android:layout_width="140dp"
                 android:layout_height="match_parent"
                 android:id="@+id/textView2"
                 android:layout_weight="0.2"/>
             <TextView
                 android:text="Teacher"
-                android:layout_width="wrap_content"
+                android:textSize="26sp"
+                android:gravity="center_vertical|left"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/tv_teacher"
                 android:layout_weight="0.8" />
@@ -48,16 +56,20 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="60dp">
             <TextView
                 android:text="Hot"
-                android:layout_width="wrap_content"
+                android:textSize="26sp"
+                android:gravity="center_vertical|left"
+                android:layout_width="140dp"
                 android:layout_height="match_parent"
                 android:id="@+id/textView3"
                 android:layout_weight="0.2"/>
             <TextView
                 android:text="Hot"
-                android:layout_width="wrap_content"
+                android:textSize="26sp"
+                android:gravity="center_vertical|left"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/tv_hot"
                 android:layout_weight="0.8" />
@@ -65,16 +77,20 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="60dp">
             <TextView
                 android:text="Create Time"
-                android:layout_width="wrap_content"
+                android:textSize="26sp"
+                android:gravity="center_vertical|left"
+                android:layout_width="140dp"
                 android:layout_height="match_parent"
                 android:id="@+id/textView4"
                 android:layout_weight="0.2"/>
             <TextView
                 android:text="Create Time"
-                android:layout_width="wrap_content"
+                android:textSize="26sp"
+                android:gravity="center_vertical|left"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/tv_time"
                 android:layout_weight="0.8" />
@@ -82,16 +98,20 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="100dp">
             <TextView
                 android:text="Describe"
-                android:layout_width="wrap_content"
+                android:textSize="26sp"
+                android:gravity="top|left"
+                android:layout_width="140dp"
                 android:layout_height="match_parent"
                 android:id="@+id/textView5"
                 android:layout_weight="0.2"/>
             <TextView
                 android:text="Describe"
-                android:layout_width="wrap_content"
+                android:textSize="26sp"
+                android:gravity="top|left"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/tv_desc"
                 android:layout_weight="0.8" />

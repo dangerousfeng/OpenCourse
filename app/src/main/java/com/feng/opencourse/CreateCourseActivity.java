@@ -64,6 +64,7 @@ public class CreateCourseActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_CODE = 2;
     private String courseFacePath = null;
     private int courseType;
+    private String courseId;
     private MyApplication myapp;
 
     // 所需的全部权限
@@ -167,7 +168,7 @@ public class CreateCourseActivity extends AppCompatActivity {
                         try {
                             String respDataStr = getRespData(response);
                             JSONObject respDataJson = new JSONObject(respDataStr);
-                            String courseId = respDataJson.optString("courseId");
+                            courseId = respDataJson.optString("courseId");
                             Properties proper = ProperTies.getProperties(myapp.getApplicationContext());
                             String endpoint = proper.getProperty("OSS_ENDPOINT");
                             OSS oss = new OSSClient(
@@ -202,10 +203,12 @@ public class CreateCourseActivity extends AppCompatActivity {
                                     }
                                 }
                             });
+                            task.waitUntilFinished(); // 可以等待任务完成
                             System.out.println("===这里跳转到空的课程详情页====");
                             Intent intent = new Intent();
-                            intent.setClass(CreateCourseActivity.this,PlaySectionActivity.class);
+                            intent.setClass(CreateCourseActivity.this,CourseDetailActivity.class);
                             intent.putExtra("courseFacePath",courseFacePath);
+                            intent.putExtra("courseId",courseId);
                             startActivity(intent);
 
                         } catch (JSONException e) {

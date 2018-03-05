@@ -26,6 +26,10 @@ public class CourseDescFragment extends Fragment {
         tvTime = (TextView) view.findViewById(R.id.tv_time);
         tvDesc = (TextView) view.findViewById(R.id.tv_desc);
 
+        if (isAdded()) {//判断Fragment已经依附Activity
+            String courseDescJsonStr = getArguments().getString("courseDescJsonStr");
+        }
+
         return view;
     }
 }

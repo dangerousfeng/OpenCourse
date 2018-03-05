@@ -22,6 +22,9 @@ public class MyApplication extends Application {
     private String userId;
     private OSSFederationToken readOnlyOSSFederationToken;
     private OSSFederationToken writeOnlyOSSFederationToken;
+    private boolean superRole = false;
+
+
 
     @Override
     public void onCreate() {
@@ -83,7 +86,13 @@ public class MyApplication extends Application {
         this.userId = userId;
     }
 
+    public boolean getSuperRole() {
+        return superRole;
+    }
 
+    public void setSuperRole(boolean superRole) {
+        this.superRole = superRole;
+    }
 }
 
 //MyApplication.getContextObject();

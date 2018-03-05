@@ -402,6 +402,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 String userBaseStr = loginRespJson.optString("userBase");
                 userBase = gson.fromJson(userBaseStr,UserBase.class);
                 myapp.setUserId(userBase.getUserId());
+                myapp.setSuperRole(userBase.getSuperRole());
 
             } catch (JSONException | IOException e){
                 e.printStackTrace();
