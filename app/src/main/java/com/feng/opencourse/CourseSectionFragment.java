@@ -1,7 +1,5 @@
 package com.feng.opencourse;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,15 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.feng.opencourse.Adapter.SectionsListViewAdapter;
+import com.feng.opencourse.adapter.SectionsListViewAdapter;
 import com.feng.opencourse.entity.Section;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 

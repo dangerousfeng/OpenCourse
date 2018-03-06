@@ -35,7 +35,7 @@ public class CourseDescFragment extends Fragment {
                 JSONObject json = new JSONObject(courseDescJsonStr);
                 tvName.setText(json.optString("courseName"));
                 tvTeacher.setText(json.optString("teacherName"));
-                tvHot.setText(json.optInt("hot"));
+                tvHot.setText(String.valueOf(json.optInt("hot")));
                 tvTime.setText(json.optString("createTime"));
                 tvDesc.setText(json.optString("courseDesc"));
             } catch (JSONException e) {

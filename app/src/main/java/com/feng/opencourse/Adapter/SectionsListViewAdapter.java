@@ -1,4 +1,4 @@
-package com.feng.opencourse.Adapter;
+package com.feng.opencourse.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

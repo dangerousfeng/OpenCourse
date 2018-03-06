@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 
 import cn.jzvd.JZVideoPlayerStandard;
@@ -47,14 +48,19 @@ public class CourseDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_detail);
 
-        Intent intent = new Intent();
+        Intent intent = getIntent();
         courseId = intent.getStringExtra("courseId");
         courseFacePath = intent.getStringExtra("courseFacePath");
         myapp = (MyApplication) getApplication();
 
         initData();
-        
+
+        attrViewPager = (ViewPager) findViewById(R.id.vp_attr);
         jzVideoPlayerStandard = (JZVideoPlayerStandard) findViewById(R.id.vp_face);
+        if (courseFacePath != null){
+            Picasso.with(CourseDetailActivity.this).load(new File(courseFacePath)).into(jzVideoPlayerStandard.thumbImageView);
+        }
+
 //        jzVideoPlayerStandard.setUp(sectionOnePath
 //                , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, sectionOneName);
 
@@ -64,20 +70,7 @@ public class CourseDetailActivity extends AppCompatActivity {
 //        }else {
 //            Picasso.with(CourseDetailActivity.this).load(courseFacePath).into(jzVideoPlayerStandard.thumbImageView);
 //        }
-        Picasso.with(CourseDetailActivity.this).load(courseFacePath).into(jzVideoPlayerStandard.thumbImageView);
 
-        attrViewPager = (ViewPager) findViewById(R.id.vp_attr);
-        mFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),
-                courseDescJsonStr, sectionsJsonStr, commentJsonStr);
-        //给ViewPager设置适配器
-        attrViewPager.setAdapter(mFragmentPagerAdapter);
-        //tablayout与Viewpager绑定
-        mTabLayout = (TabLayout) findViewById(R.id.tl_attr);
-        mTabLayout.setupWithViewPager(attrViewPager);
-
-        mTab1 = mTabLayout.getTabAt(0);
-        mTab2 = mTabLayout.getTabAt(1);
-        mTab2 = mTabLayout.getTabAt(2);
     }
 
     private void initData() {
@@ -106,6 +99,22 @@ public class CourseDetailActivity extends AppCompatActivity {
                         sectionsJsonStr = respDataJson.optString("sections");
                         commentJsonStr = respDataJson.optString("comments");
 
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),
+                                        courseDescJsonStr, sectionsJsonStr, commentJsonStr);
+                                //给ViewPager设置适配器
+                                attrViewPager.setAdapter(mFragmentPagerAdapter);
+                                //tablayout与Viewpager绑定
+                                mTabLayout = (TabLayout) findViewById(R.id.tl_attr);
+                                mTabLayout.setupWithViewPager(attrViewPager);
+
+                                mTab1 = mTabLayout.getTabAt(0);
+                                mTab2 = mTabLayout.getTabAt(1);
+                                mTab2 = mTabLayout.getTabAt(2);
+                            }
+                        });
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
