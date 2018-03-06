@@ -36,14 +36,15 @@
         <activity
             android:name=".PlaySectionActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".CreateCourseActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PermissionsActivity"
             android:theme="@style/AppTheme.NoActionBar.Permissions" />
-        <activity android:name=".CourseDetailActivity"/>
+        <activity android:name=".CourseDetailActivity" />
+        <activity android:name=".TeacherHomeActivity"></activity>
     </application>
 
 </manifest>

@@ -60,7 +60,7 @@ public class CourseDetailActivity extends AppCompatActivity {
         if (courseFacePath != null){
             Picasso.with(CourseDetailActivity.this).load(new File(courseFacePath)).into(jzVideoPlayerStandard.thumbImageView);
         }
-
+        //// TODO: 2018/3/7 0007 courseFacePath == null,fragment中填充image
 //        jzVideoPlayerStandard.setUp(sectionOnePath
 //                , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, sectionOneName);
 
@@ -74,7 +74,7 @@ public class CourseDetailActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        //// TODO: 2018/3/5 0005 根据courseId获取课程详情所有数据
+        //// TODO: 2018/3/5 0005 根据courseId获取课程小节,评论;
         JSONObject json = new JSONObject();
         try {
             json.put("ActionId", 204);
@@ -87,7 +87,7 @@ public class CourseDetailActivity extends AppCompatActivity {
             com.feng.opencourse.util.HttpUtil.sendAsyncRequest(body, new okhttp3.Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Toast.makeText(CourseDetailActivity.this, "创建失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CourseDetailActivity.this, "获取课程详情失败", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
