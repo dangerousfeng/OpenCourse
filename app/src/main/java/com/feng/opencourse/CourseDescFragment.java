@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class CourseDescFragment extends Fragment {
 
     private View view;
@@ -28,6 +31,16 @@ public class CourseDescFragment extends Fragment {
 
         if (isAdded()) {//判断Fragment已经依附Activity
             String courseDescJsonStr = getArguments().getString("courseDescJsonStr");
+            try {
+                JSONObject json = new JSONObject(courseDescJsonStr);
+                tvName.setText(json.optString("courseName"));
+                tvTeacher.setText(json.optString("teacherName"));
+                tvHot.setText(json.optInt("hot"));
+                tvTime.setText(json.optString("createTime"));
+                tvDesc.setText(json.optString("courseDesc"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         return view;
