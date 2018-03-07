@@ -1,8 +1,13 @@
 package com.feng.opencourse;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +57,19 @@ public class TeacherHomeActivity extends AppCompatActivity {
         teacherId = intent.getStringExtra("teacherId");
 
         initData();
+
+
+        lvCourses.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String clickCourseId = courseList.get(position).getCourseId();
+                Intent toCourseDetail = new Intent(myapp.getApplicationContext(), CourseDetailActivity.class);
+                toCourseDetail.putExtra("courseId",clickCourseId);
+                startActivity(toCourseDetail);
+            }
+        } );
     }
 
     private void initData() {
@@ -74,6 +92,7 @@ public class TeacherHomeActivity extends AppCompatActivity {
                         String respDataStr = getRespData(response);
                         JSONObject respDataJson = new JSONObject(respDataStr);
                         String coursesJsonStr = respDataJson.optString("createdCourses");
+                        JSONObject teacherInfoJson = respDataJson.optJSONObject("teacherInfo");
                         
                         //Json的解析类对象
                         JsonParser parser = new JsonParser();
@@ -93,7 +112,14 @@ public class TeacherHomeActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                lvCourses.setAdapter(new CoursesListViewAdapter(myapp.getApplicationContext(),courseList));
+                                lvCourses.setAdapter(new CoursesListViewAdapter(myapp.getApplicationContext(),courseList,myapp));
+
+                                String tvShow = "\\n"+
+                                        "\\n"+
+                                        "\\n" +
+                                        teacherInfoJson.optString("userName") + "\\n" +
+                                        "Email: " + teacherInfoJson.optString("email") + "\\n";
+                                tvTeacherInfo.setText(tvShow);
                             }
                         });
                         
@@ -107,4 +133,6 @@ public class TeacherHomeActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
 }

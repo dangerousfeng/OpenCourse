@@ -1,14 +1,27 @@
 package com.feng.opencourse;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.alibaba.sdk.android.oss.ClientException;
+import com.alibaba.sdk.android.oss.OSS;
+import com.alibaba.sdk.android.oss.OSSClient;
+import com.alibaba.sdk.android.oss.ServiceException;
+import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
+import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
+import com.alibaba.sdk.android.oss.model.GetObjectRequest;
+import com.alibaba.sdk.android.oss.model.GetObjectResult;
+import com.feng.opencourse.adapter.CoursesListViewAdapter;
 import com.feng.opencourse.adapter.MyFragmentPagerAdapter;
 import com.feng.opencourse.util.MyApplication;
+import com.feng.opencourse.util.ProperTies;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -16,6 +29,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import cn.jzvd.JZVideoPlayerStandard;
 import okhttp3.Call;
@@ -51,25 +66,56 @@ public class CourseDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         courseId = intent.getStringExtra("courseId");
         courseFacePath = intent.getStringExtra("courseFacePath");
+
         myapp = (MyApplication) getApplication();
 
         initData();
 
         attrViewPager = (ViewPager) findViewById(R.id.vp_attr);
         jzVideoPlayerStandard = (JZVideoPlayerStandard) findViewById(R.id.vp_face);
-        if (courseFacePath != null){
-            Picasso.with(CourseDetailActivity.this).load(new File(courseFacePath)).into(jzVideoPlayerStandard.thumbImageView);
-        }
+
         //// TODO: 2018/3/7 0007 courseFacePath == null,fragment中填充image
 //        jzVideoPlayerStandard.setUp(sectionOnePath
 //                , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, sectionOneName);
 
-//        if (courseFacePath == null){
-//            Bitmap bitmap=BitmapFactory.decodeStream(in);
-//            jzVideoPlayerStandard.thumbImageView.setImageBitmap();
-//        }else {
-//            Picasso.with(CourseDetailActivity.this).load(courseFacePath).into(jzVideoPlayerStandard.thumbImageView);
-//        }
+        if (courseFacePath == null){
+            Properties proper = ProperTies.getProperties(myapp.getApplicationContext());
+            String endpoint = proper.getProperty("OSS_ENDPOINT");
+            OSS oss = new OSSClient(
+                    myapp.getApplicationContext(),
+                    endpoint,
+                    myapp.getReadOnlyOSSCredentialProvider());
+
+            GetObjectRequest get = new GetObjectRequest(proper.getProperty("OSS_BUCKET_NAME"), courseId + proper.getProperty("FACE_KEY"));
+
+            OSSAsyncTask task = oss.asyncGetObject(get, new OSSCompletedCallback<GetObjectRequest, GetObjectResult>(){
+                @Override
+                public void onSuccess(GetObjectRequest request, GetObjectResult result) {
+                    // 请求成功
+                    InputStream inputStream = result.getObjectContent();
+                    Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
+                    jzVideoPlayerStandard.thumbImageView.setImageBitmap(bitmap);
+                }
+                @Override
+                public void onFailure(GetObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+                    // 请求异常
+                    if (clientExcepion != null) {
+                        // 本地异常如网络异常等
+                        clientExcepion.printStackTrace();
+                    }
+                    if (serviceException != null) {
+                        // 服务异常
+                        Log.e("ErrorCode", serviceException.getErrorCode());
+                        Log.e("RequestId", serviceException.getRequestId());
+                        Log.e("HostId", serviceException.getHostId());
+                        Log.e("RawMessage", serviceException.getRawMessage());
+                    }
+                }
+            });
+
+        }else {
+            Picasso.with(CourseDetailActivity.this).load(new File(courseFacePath)).into(jzVideoPlayerStandard.thumbImageView);
+        }
 
     }
 

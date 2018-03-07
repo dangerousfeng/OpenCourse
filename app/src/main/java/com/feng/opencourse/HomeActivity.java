@@ -47,11 +47,14 @@ public class HomeActivity extends AppCompatActivity
 
     private UserData userData;
     private UserBase userBase;
+    private MyApplication myapp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        myapp = (MyApplication) getApplication();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -320,7 +323,8 @@ public class HomeActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_gallery) {
             Intent toCreateCourse = new Intent();
-            toCreateCourse.setClass(HomeActivity.this,CreateCourseActivity.class);
+            toCreateCourse.putExtra("teacherId",myapp.getUserId());
+            toCreateCourse.setClass(HomeActivity.this,TeacherHomeActivity.class);
             startActivity(toCreateCourse);
         } else if (id == R.id.nav_slideshow) {
             Intent toCourseDetail = new Intent();
