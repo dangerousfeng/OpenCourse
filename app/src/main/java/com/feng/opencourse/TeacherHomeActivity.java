@@ -3,6 +3,8 @@ package com.feng.opencourse;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -53,6 +55,8 @@ public class TeacherHomeActivity extends AppCompatActivity {
         myapp = (MyApplication) getApplication();
         tvTeacherInfo = (TextView) findViewById(R.id.tv_teacher_info);
         lvCourses = (ListView) findViewById(R.id.lv_teacher_courses);
+        FloatingActionButton fabCreateCourse = (FloatingActionButton) findViewById(R.id.fab_create_course);
+
         Intent intent = getIntent();
         teacherId = intent.getStringExtra("teacherId");
 
@@ -70,6 +74,14 @@ public class TeacherHomeActivity extends AppCompatActivity {
                 startActivity(toCourseDetail);
             }
         } );
+        fabCreateCourse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toCreateCourse = new Intent();
+                toCreateCourse.setClass(TeacherHomeActivity.this,CreateCourseActivity.class);
+                startActivity(toCreateCourse);
+            }
+        });
     }
 
     private void initData() {
@@ -114,11 +126,8 @@ public class TeacherHomeActivity extends AppCompatActivity {
                             public void run() {
                                 lvCourses.setAdapter(new CoursesListViewAdapter(myapp.getApplicationContext(),courseList,myapp));
 
-                                String tvShow = "\\n"+
-                                        "\\n"+
-                                        "\\n" +
-                                        teacherInfoJson.optString("userName") + "\\n" +
-                                        "Email: " + teacherInfoJson.optString("email") + "\\n";
+                                String tvShow = teacherInfoJson.optString("userName") + "\n" +
+                                        "Email: " + teacherInfoJson.optString("email") + "\n";
                                 tvTeacherInfo.setText(tvShow);
                             }
                         });

@@ -170,4 +170,9 @@ public class CourseDetailActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    @Override
+    protected void onDestroy() {
+        jzVideoPlayerStandard.releaseAllVideos();
+        super.onDestroy();
+    }
 }
