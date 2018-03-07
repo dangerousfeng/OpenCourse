@@ -58,7 +58,7 @@ public class SectionsListViewAdapter extends BaseAdapter {
         if(convertView==null){
             zujian=new Zujian();
             //获得组件，实例化组件
-            convertView=layoutInflater.inflate(R.layout.fragment_course_section,null);
+            convertView=layoutInflater.inflate(R.layout.listview_item_sections,null);
 
             zujian.title=(TextView)convertView.findViewById(R.id.tv_secName);
 

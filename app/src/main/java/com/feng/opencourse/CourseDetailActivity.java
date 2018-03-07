@@ -74,7 +74,7 @@ public class CourseDetailActivity extends AppCompatActivity {
         attrViewPager = (ViewPager) findViewById(R.id.vp_attr);
         jzVideoPlayerStandard = (JZVideoPlayerStandard) findViewById(R.id.vp_face);
 
-        //// TODO: 2018/3/7 0007 courseFacePath == null,fragment中填充image
+        //// TODO: 2018/3/7 0007 填充第一节
 //        jzVideoPlayerStandard.setUp(sectionOnePath
 //                , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, sectionOneName);
 
@@ -174,5 +174,13 @@ public class CourseDetailActivity extends AppCompatActivity {
     protected void onDestroy() {
         jzVideoPlayerStandard.releaseAllVideos();
         super.onDestroy();
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public MyApplication getMyapp() {
+        return myapp;
     }
 }

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_create_section"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.feng.opencourse.CreateSectionActivity">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <cn.jzvd.JZVideoPlayerStandard
+            android:id="@+id/vp_create_section"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:clickable="true"
+            android:alpha="1"
+            app:srcCompat="@drawable/video_icon_"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:id="@+id/iv_create_section" />
+        </cn.jzvd.JZVideoPlayerStandard>
+
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="23dp"
+        android:layout_weight="0.07">
+
+        <TextView
+            android:text="名称"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/tv_section_name"
+            android:textSize="24sp"
+            android:layout_weight="0.27" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:inputType="textPersonName"
+            android:hint="Name"
+            android:ems="10"
+            android:id="@+id/et_sectionName"
+            android:layout_weight="0.73" />
+    </LinearLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="添加小节描述信息"
+        android:ems="10"
+        android:id="@+id/et_sectionDesc"
+        android:layout_weight="0.35" />
+
+    <Button
+        android:text="Create"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_createSection"
+        android:layout_weight="0.03" />
+</LinearLayout>
