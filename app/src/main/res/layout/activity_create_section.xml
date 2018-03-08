@@ -16,7 +16,10 @@
         <cn.jzvd.JZVideoPlayerStandard
             android:id="@+id/vp_create_section"
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="200dp"
+            android:clickable="false"
+
+            >
 
         <ImageView
             android:layout_width="match_parent"
@@ -27,6 +30,17 @@
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
             android:id="@+id/iv_create_section" />
+
+            <ProgressBar
+                android:id="@+id/pb_upload_section"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginTop="180dp"
+                android:max="100"
+                android:progress="80"
+            />
+
         </cn.jzvd.JZVideoPlayerStandard>
 
     </FrameLayout>
