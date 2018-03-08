@@ -105,8 +105,8 @@ public class CreateSectionActivity extends AppCompatActivity {
     View.OnClickListener selectSectionListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Log.i("print","============btn click=======");
-//            Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+
+//          Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
             Intent intent=new Intent("android.intent.action.GET_CONTENT");
             intent.setType("video/*");
             startActivityForResult(intent, VIDEO_REQUEST_CODE);
@@ -144,6 +144,7 @@ public class CreateSectionActivity extends AppCompatActivity {
                             String respDataStr = getRespData(response);
                             JSONObject respDataJson = new JSONObject(respDataStr);
                             secId = respDataJson.optString("secId");
+                            Log.i("secId","============"+secId);
                             Properties proper = ProperTies.getProperties(myapp.getApplicationContext());
                             String endpoint = proper.getProperty("OSS_ENDPOINT");
                             OSS oss = new OSSClient(
@@ -159,6 +160,13 @@ public class CreateSectionActivity extends AppCompatActivity {
                                 @Override
                                 public void onProgress(PutObjectRequest request, long currentSize, long totalSize) {
                                     Log.d("PutObject", "currentSize: " + currentSize + " totalSize: " + totalSize);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            pbUploadSec.setMax((int) totalSize);
+                                            pbUploadSec.setProgress((int) currentSize);
+                                        }
+                                    });
                                 }
                             });
                             OSSAsyncTask task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
