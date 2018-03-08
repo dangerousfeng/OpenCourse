@@ -2,30 +2,49 @@ package com.feng.opencourse;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.alibaba.sdk.android.oss.ClientException;
+import com.alibaba.sdk.android.oss.OSS;
+import com.alibaba.sdk.android.oss.OSSClient;
+import com.alibaba.sdk.android.oss.ServiceException;
+import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
+import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
+import com.alibaba.sdk.android.oss.model.GetObjectRequest;
+import com.alibaba.sdk.android.oss.model.GetObjectResult;
 import com.feng.opencourse.adapter.SectionsListViewAdapter;
 import com.feng.opencourse.entity.Section;
 import com.feng.opencourse.util.MyApplication;
+import com.feng.opencourse.util.ProperTies;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Properties;
+
+import cn.jzvd.JZVideoPlayerStandard;
 
 
 public class CourseSectionFragment extends Fragment {
 
     private ListView lv_sections;
     private FloatingActionButton fabCreateSec;
+    private JZVideoPlayerStandard jzVideoPlayerStandard;
     private String courseId;
+    private ArrayList<Section> secList;
     private MyApplication myapp;
 
     @Override
@@ -33,6 +52,7 @@ public class CourseSectionFragment extends Fragment {
         super.onAttach(activity);
         courseId = ((CourseDetailActivity) activity).getCourseId();//通过强转成宿主activity，就可以获取到传递过来的数据
         myapp = ((CourseDetailActivity) activity).getMyapp();
+        jzVideoPlayerStandard = (JZVideoPlayerStandard) getActivity().findViewById(R.id.vp_face);
     }
 
     @Override
@@ -53,7 +73,7 @@ public class CourseSectionFragment extends Fragment {
             JsonArray jsonArray = parser.parse(sectionsJsonStr).getAsJsonArray();
 
             Gson gson = new Gson();
-            ArrayList<Section> secList = new ArrayList<>();
+            secList = new ArrayList<>();
 
             //加强for循环遍历JsonArray
             for (JsonElement sec : jsonArray) {
@@ -63,6 +83,7 @@ public class CourseSectionFragment extends Fragment {
             }
 
             lv_sections.setAdapter(new SectionsListViewAdapter(getActivity(),secList));
+            lv_sections.setOnItemClickListener(playSecListener);
         }
 
 
@@ -77,4 +98,45 @@ public class CourseSectionFragment extends Fragment {
             startActivity(intent);
         }
     };
+    AdapterView.OnItemClickListener playSecListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            int clickSectionId = secList.get(position).getSectionId();
+            String clickSecName = secList.get(position).getSecName();
+
+            Properties proper = ProperTies.getProperties(myapp.getApplicationContext());
+            String endpoint = proper.getProperty("OSS_ENDPOINT");
+            OSS oss = new OSSClient(
+                    myapp.getApplicationContext(),
+                    endpoint,
+                    myapp.getReadOnlyOSSCredentialProvider());
+
+            GetObjectRequest get = new GetObjectRequest(proper.getProperty("OSS_BUCKET_NAME"), courseId + "/" + String.valueOf(clickSectionId));
+
+            OSSAsyncTask task = oss.asyncGetObject(get, new OSSCompletedCallback<GetObjectRequest, GetObjectResult>(){
+                @Override
+                public void onSuccess(GetObjectRequest request, GetObjectResult result) {
+                    // 请求成功
+                    InputStream inputStream = result.getObjectContent();
+
+                }
+                @Override
+                public void onFailure(GetObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+                    // 请求异常
+                    if (clientExcepion != null) {
+                        // 本地异常如网络异常等
+                        clientExcepion.printStackTrace();
+                    }
+                    if (serviceException != null) {
+                        // 服务异常
+                        Log.e("ErrorCode", serviceException.getErrorCode());
+                        Log.e("RequestId", serviceException.getRequestId());
+                        Log.e("HostId", serviceException.getHostId());
+                        Log.e("RawMessage", serviceException.getRawMessage());
+                    }
+                }
+            });
+        }
+    };
+
 }

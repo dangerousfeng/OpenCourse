@@ -117,9 +117,12 @@ public class CreateSectionActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             ivCreateSection.setVisibility(View.GONE);
-            jzVideoPlayerStandard.setClickable(false);
-            jzVideoPlayerStandard.setAlpha(0.5f);
+//            jzVideoPlayerStandard.setClickable(false);
+//            jzVideoPlayerStandard.setAlpha(0.3f);
             pbUploadSec.setVisibility(View.VISIBLE);
+            etSectionName.setClickable(false);
+            etSectionDesc.setClickable(false);
+            btnCreateSec.setClickable(false);
 
             JSONObject json = new JSONObject();
             try {
@@ -193,7 +196,16 @@ public class CreateSectionActivity extends AppCompatActivity {
                                 }
                             });
                             task.waitUntilFinished(); // 可以等待任务完成
-                            System.out.println("===finish()====");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(myapp.getApplicationContext(), "上传成功", Toast.LENGTH_SHORT).show();
+                                    Intent toBack = new Intent();
+                                    toBack.putExtra("courseId",courseId);
+                                    toBack.setClass(myapp.getApplicationContext(),CourseDetailActivity.class);
+                                    myapp.getApplicationContext().startActivity(toBack);
+                                }
+                            });
 
                         } catch (JSONException e) {
                             e.printStackTrace();

@@ -20,8 +20,12 @@ import com.alibaba.sdk.android.oss.model.GetObjectRequest;
 import com.alibaba.sdk.android.oss.model.GetObjectResult;
 import com.feng.opencourse.adapter.CoursesListViewAdapter;
 import com.feng.opencourse.adapter.MyFragmentPagerAdapter;
+import com.feng.opencourse.entity.Section;
 import com.feng.opencourse.util.MyApplication;
 import com.feng.opencourse.util.ProperTies;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -30,6 +34,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import cn.jzvd.JZVideoPlayerStandard;
@@ -74,9 +79,9 @@ public class CourseDetailActivity extends AppCompatActivity {
         attrViewPager = (ViewPager) findViewById(R.id.vp_attr);
         jzVideoPlayerStandard = (JZVideoPlayerStandard) findViewById(R.id.vp_face);
 
-        //// TODO: 2018/3/7 0007 填充第一节
-//        jzVideoPlayerStandard.setUp(sectionOnePath
-//                , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, sectionOneName);
+//        if (playSecId != 0){
+//            jzVideoPlayerStandard.setUp(sectionOnePath , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, sectionOneName);
+//        }
 
         if (courseFacePath == null){
             Properties proper = ProperTies.getProperties(myapp.getApplicationContext());
@@ -144,6 +149,11 @@ public class CourseDetailActivity extends AppCompatActivity {
                         courseDescJsonStr = respDataJson.optString("course");
                         sectionsJsonStr = respDataJson.optString("sections");
                         commentJsonStr = respDataJson.optString("comments");
+
+
+                        JsonParser parser = new JsonParser();  //Json的解析类对象
+                        JsonArray jsonArray = parser.parse(sectionsJsonStr).getAsJsonArray(); //将JSON的String 转成一个JsonArray对象
+
 
                         runOnUiThread(new Runnable() {
                             @Override
