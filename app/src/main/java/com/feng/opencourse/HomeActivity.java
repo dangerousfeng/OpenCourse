@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
@@ -48,6 +49,7 @@ public class HomeActivity extends AppCompatActivity
     private UserData userData;
     private UserBase userBase;
     private MyApplication myapp;
+    private ListView lvHomeCourses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,7 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        lvHomeCourses = (ListView) findViewById(R.id.lv_home_course);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +85,7 @@ public class HomeActivity extends AppCompatActivity
         TextView tv_email = (TextView) headerView.findViewById(R.id.tv_email);
 
         // 全局获取jwt过来
-        MyApplication myapp = (MyApplication) getApplication();
+        myapp = (MyApplication) getApplication();
         String jwt = myapp.getJWT();
         Toast.makeText(this, jwt, Toast.LENGTH_SHORT).show();
 

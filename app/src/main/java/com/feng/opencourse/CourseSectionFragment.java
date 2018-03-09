@@ -31,6 +31,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -47,12 +51,16 @@ public class CourseSectionFragment extends Fragment {
     private ArrayList<Section> secList;
     private MyApplication myapp;
 
+    private File mTmpFile = null;
+    private String url;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         courseId = ((CourseDetailActivity) activity).getCourseId();//通过强转成宿主activity，就可以获取到传递过来的数据
         myapp = ((CourseDetailActivity) activity).getMyapp();
         jzVideoPlayerStandard = (JZVideoPlayerStandard) getActivity().findViewById(R.id.vp_face);
+        url = activity.getCacheDir().toString()+"/";
     }
 
     @Override
@@ -62,7 +70,6 @@ public class CourseSectionFragment extends Fragment {
         lv_sections = (ListView) view.findViewById(R.id.lv_sections);
         fabCreateSec = (FloatingActionButton) view.findViewById(R.id.fab_create_section);
         fabCreateSec.setOnClickListener(toCreateSecListener);
-
 
         if (isAdded()) {//判断Fragment已经依附Activity
             String sectionsJsonStr = getArguments().getString("sectionsJsonStr");
@@ -119,7 +126,35 @@ public class CourseSectionFragment extends Fragment {
                     // 请求成功
                     InputStream inputStream = result.getObjectContent();
 
+                    try {
+
+                        mTmpFile = File.createTempFile(url+"video", ".mp4");
+                        mTmpFile.deleteOnExit();
+
+                        int size = inputStream.available();
+                        byte[] buffer = new byte[size];
+                        int bytesWritten = 0;
+                        int byteCount = 0;
+
+                        FileOutputStream fos = new FileOutputStream(mTmpFile);
+                        while ((byteCount = inputStream.read(buffer)) != -1)
+                        {
+                            fos.write(buffer, bytesWritten, byteCount);
+                            bytesWritten += byteCount;
+                        }
+                        inputStream.close();
+                        fos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    jzVideoPlayerStandard.setUp(
+                            mTmpFile.getAbsolutePath(),
+                            JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL,
+                            "");
                 }
+
                 @Override
                 public void onFailure(GetObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
                     // 请求异常
@@ -138,5 +173,13 @@ public class CourseSectionFragment extends Fragment {
             });
         }
     };
+    @Override
+    public void onDestroy() {
+        if (mTmpFile != null) {
+            mTmpFile.delete();
+        }
+        super.onDestroy();
+    }
+
 
 }
