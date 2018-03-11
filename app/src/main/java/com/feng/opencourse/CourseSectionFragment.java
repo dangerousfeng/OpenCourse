@@ -1,6 +1,8 @@
 package com.feng.opencourse;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,18 +21,22 @@ import com.alibaba.sdk.android.oss.OSS;
 import com.alibaba.sdk.android.oss.OSSClient;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
+import com.alibaba.sdk.android.oss.callback.OSSProgressCallback;
+import com.alibaba.sdk.android.oss.common.OSSLog;
 import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
 import com.alibaba.sdk.android.oss.model.GetObjectRequest;
 import com.alibaba.sdk.android.oss.model.GetObjectResult;
 import com.feng.opencourse.adapter.SectionsListViewAdapter;
 import com.feng.opencourse.entity.Section;
 import com.feng.opencourse.util.MyApplication;
+import com.feng.opencourse.util.PermissionsChecker;
 import com.feng.opencourse.util.ProperTies;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -52,15 +58,27 @@ public class CourseSectionFragment extends Fragment {
     private MyApplication myapp;
 
     private File mTmpFile = null;
-    private String url;
+    private File url;
+
+    private static final int PERMISSIONS_REQUEST_CODE = 2;
+    // 所需的全部权限
+    static final String[] PERMISSIONS = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.INTERNET
+    };
+    private PermissionsChecker mPermissionsChecker; // 权限检测器
+    private Activity myactivity;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        myactivity = (CourseDetailActivity) activity;
         courseId = ((CourseDetailActivity) activity).getCourseId();//通过强转成宿主activity，就可以获取到传递过来的数据
         myapp = ((CourseDetailActivity) activity).getMyapp();
         jzVideoPlayerStandard = (JZVideoPlayerStandard) getActivity().findViewById(R.id.vp_face);
-        url = activity.getCacheDir().toString()+"/";
+        url = activity.getCacheDir();
+        mPermissionsChecker = new PermissionsChecker(myapp.getApplicationContext());
+
     }
 
     @Override
@@ -112,65 +130,57 @@ public class CourseSectionFragment extends Fragment {
             String clickSecName = secList.get(position).getSecName();
 
             Properties proper = ProperTies.getProperties(myapp.getApplicationContext());
-            String endpoint = proper.getProperty("OSS_ENDPOINT");
-            OSS oss = new OSSClient(
-                    myapp.getApplicationContext(),
-                    endpoint,
-                    myapp.getReadOnlyOSSCredentialProvider());
 
-            GetObjectRequest get = new GetObjectRequest(proper.getProperty("OSS_BUCKET_NAME"), courseId + "/" + String.valueOf(clickSectionId));
-
-            OSSAsyncTask task = oss.asyncGetObject(get, new OSSCompletedCallback<GetObjectRequest, GetObjectResult>(){
-                @Override
-                public void onSuccess(GetObjectRequest request, GetObjectResult result) {
-                    // 请求成功
-                    InputStream inputStream = result.getObjectContent();
-
-                    try {
-
-                        mTmpFile = File.createTempFile(url+"video", ".mp4");
-                        mTmpFile.deleteOnExit();
-
-                        int size = inputStream.available();
-                        byte[] buffer = new byte[size];
-                        int bytesWritten = 0;
-                        int byteCount = 0;
-
-                        FileOutputStream fos = new FileOutputStream(mTmpFile);
-                        while ((byteCount = inputStream.read(buffer)) != -1)
-                        {
-                            fos.write(buffer, bytesWritten, byteCount);
-                            bytesWritten += byteCount;
-                        }
-                        inputStream.close();
-                        fos.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    jzVideoPlayerStandard.setUp(
-                            mTmpFile.getAbsolutePath(),
-                            JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL,
-                            "");
-                }
-
-                @Override
-                public void onFailure(GetObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
-                    // 请求异常
-                    if (clientExcepion != null) {
-                        // 本地异常如网络异常等
-                        clientExcepion.printStackTrace();
-                    }
-                    if (serviceException != null) {
-                        // 服务异常
-                        Log.e("ErrorCode", serviceException.getErrorCode());
-                        Log.e("RequestId", serviceException.getRequestId());
-                        Log.e("HostId", serviceException.getHostId());
-                        Log.e("RawMessage", serviceException.getRawMessage());
-                    }
-                }
-            });
+            // TODO 通过只读权限读取到io流inputstream进行缓存并播放
+//            String endpoint = proper.getProperty("OSS_ENDPOINT");
+//            OSS oss = new OSSClient(
+//                    myapp.getApplicationContext(),
+//                    endpoint,
+//                    myapp.getReadOnlyOSSCredentialProvider());
+//            Log.i("click===========",courseId + "/" + String.valueOf(clickSectionId));
+//            GetObjectRequest get = new GetObjectRequest(proper.getProperty("OSS_BUCKET_NAME"), courseId + "/" + String.valueOf(clickSectionId));
+//
+//            get.setProgressListener(new OSSProgressCallback<GetObjectRequest>() {
+//                @Override
+//                public void onProgress(GetObjectRequest request, long currentSize, long totalSize) {
+//
+//                    //Log.i("progress=====","getobj_progress: " + currentSize+"  total_size: " + totalSize);
+//                }
+//            });
+//
+//            OSSAsyncTask task = oss.asyncGetObject(get, new OSSCompletedCallback<GetObjectRequest, GetObjectResult>(){
+//                @Override
+//                public void onSuccess(GetObjectRequest request, GetObjectResult result) {
+//                    // 请求成功
+//                    InputStream inputStream = result.getObjectContent();
+//                    //String tempPath = play(inputStream);
+//
+//                }
+//
+//                @Override
+//                public void onFailure(GetObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+//                    // 请求异常
+//                    if (clientExcepion != null) {
+//                        // 本地异常如网络异常等
+//                        clientExcepion.printStackTrace();
+//                    }
+//                    if (serviceException != null) {
+//                        // 服务异常
+//                        Log.e("ErrorCode", serviceException.getErrorCode());
+//                        Log.e("RequestId", serviceException.getRequestId());
+//                        Log.e("HostId", serviceException.getHostId());
+//                        Log.e("RawMessage", serviceException.getRawMessage());
+//                    }
+//                }
+//            });
+//            task.waitUntilFinished();
+            // 没有只读权限验证 直接读取
+            String reqURL = proper.getProperty("MOOC_PATH")  + courseId + "/" + String.valueOf(clickSectionId);
+            jzVideoPlayerStandard.setUp(
+                    reqURL,
+                    JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL,
+                    ""
+            );
         }
     };
     @Override
@@ -180,6 +190,48 @@ public class CourseSectionFragment extends Fragment {
         }
         super.onDestroy();
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        // 缺少权限时, 进入权限配置页面
+        if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
+            startPermissionsActivity();
+        }
+    }
+    private void startPermissionsActivity() {
+        PermissionsActivity.startActivityForResult(myactivity, PERMISSIONS_REQUEST_CODE, PERMISSIONS);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_CODE:
+                if ( resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+                    myactivity.finish();
+                }
+        }
 
+        }
+    private String play( InputStream stream) {
+        String tempPath = "";
+        try {
+            File temp = File.createTempFile("mediaplayertmp", ".mp4");
+            tempPath = temp.getAbsolutePath();
+            FileOutputStream out = new FileOutputStream(temp);
+            //用BufferdOutputStream速度快
+            BufferedOutputStream bis = new BufferedOutputStream(out);
+            byte buf[] = new byte[128];
+            do {
+                int numread = stream.read(buf);
+                if (numread <= 0)
+                    break;
+                bis.write(buf, 0, numread);
+            } while (true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tempPath;
+    }
 
 }

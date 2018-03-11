@@ -123,11 +123,11 @@ public class CreateCourseActivity extends AppCompatActivity {
     View.OnClickListener courseFaceOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-//            Intent intent = new Intent(
-//                    Intent.ACTION_PICK,
-//                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            Intent intent=new Intent("android.intent.action.GET_CONTENT");
-            intent.setType("image/*");
+            Intent intent = new Intent(
+                    Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//            Intent intent=new Intent("android.intent.action.GET_CONTENT");
+//            intent.setType("image/*");
             startActivityForResult(intent, IMAGE_REQUEST_CODE);
         }
     };

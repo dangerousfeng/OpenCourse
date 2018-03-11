@@ -6,3 +6,5 @@ OSS_ENDPOINT = http://oss-cn-beijing.aliyuncs.com
 OSS_BUCKET_NAME = mooc-feng
 AVATER_KEY = avater/
 FACE_KEY = /face"
+
+MOOC_PATH = http://mooc-feng.oss-cn-beijing.aliyuncs.com/

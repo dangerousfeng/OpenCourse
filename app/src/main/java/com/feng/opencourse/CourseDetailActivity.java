@@ -121,7 +121,14 @@ public class CourseDetailActivity extends AppCompatActivity {
         }else {
             Picasso.with(CourseDetailActivity.this).load(new File(courseFacePath)).into(jzVideoPlayerStandard.thumbImageView);
         }
-
+        //默认载入第一小节
+        Properties proper = ProperTies.getProperties(myapp.getApplicationContext());
+        String reqURL = proper.getProperty("MOOC_PATH")  + courseId + "/" + "1";
+        jzVideoPlayerStandard.setUp(
+                reqURL,
+                JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL,
+                ""
+        );
     }
 
     private void initData() {
