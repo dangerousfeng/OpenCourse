@@ -85,6 +85,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private String jwt = "";
+    private String hotCoursesJsonStr;
+    private String recommendCoursesJsonStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -403,6 +405,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 userBase = gson.fromJson(userBaseStr,UserBase.class);
                 myapp.setUserId(userBase.getUserId());
                 myapp.setSuperRole(userBase.getSuperRole());
+                // hot course
+                hotCoursesJsonStr = loginRespJson.optString("hotCourses");
+                // recommend course
+                recommendCoursesJsonStr = loginRespJson.optString("recommendCourses");
 
             } catch (JSONException | IOException e){
                 e.printStackTrace();
@@ -422,6 +428,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Bundle bundle=new Bundle();
                 bundle.putSerializable("userData",userData);
                 bundle.putSerializable("userBase",userBase);
+                bundle.putString("hotCoursesJsonStr",hotCoursesJsonStr);
+                bundle.putString("recommendCoursesJsonStr",recommendCoursesJsonStr);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 finish();

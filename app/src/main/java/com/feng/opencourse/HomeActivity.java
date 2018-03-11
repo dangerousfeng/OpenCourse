@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,10 +26,17 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.feng.opencourse.adapter.CoursesListViewAdapter;
 import com.feng.opencourse.adapter.ViewPagerAdapter;
+import com.feng.opencourse.entity.Course;
 import com.feng.opencourse.entity.UserBase;
 import com.feng.opencourse.entity.UserData;
 import com.feng.opencourse.util.MyApplication;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -50,6 +58,8 @@ public class HomeActivity extends AppCompatActivity
     private UserBase userBase;
     private MyApplication myapp;
     private ListView lvHomeCourses;
+    private ArrayList<Course> hotCourseList;
+    private ArrayList<Course> recommendCourseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +101,8 @@ public class HomeActivity extends AppCompatActivity
 
         // 登录传递
         Bundle bundle=this.getIntent().getExtras();
+        String hotCoursesJsonStr = bundle.getString("hotCoursesJsonStr");
+        String recommendCoursesJsonStr = bundle.getString("recommendCoursesJsonStr");
         userBase = (UserBase) bundle.getSerializable("userBase");
         userData = (UserData) bundle.getSerializable("userData");
         tv_userName.setText(userData.getNickname());
@@ -100,6 +112,26 @@ public class HomeActivity extends AppCompatActivity
         initRollViewPager();
 
         // 课程列表
+        JsonParser parser = new JsonParser();
+        JsonArray jsonArray = parser.parse(hotCoursesJsonStr).getAsJsonArray();
+        Gson gson = new Gson();
+        hotCourseList = new ArrayList<>();
+        for (JsonElement cour : jsonArray) {
+            Course course = gson.fromJson(cour, Course.class);
+            hotCourseList.add(course);
+        }
+        lvHomeCourses.setAdapter(new CoursesListViewAdapter(myapp.getApplicationContext(),hotCourseList,myapp));
+        lvHomeCourses.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String clickCourseId = hotCourseList.get(position).getCourseId();
+                Intent toCourseDetail = new Intent(myapp.getApplicationContext(), CourseDetailActivity.class);
+                toCourseDetail.putExtra("courseId",clickCourseId);
+                startActivity(toCourseDetail);
+            }
+        } );
     }
 
     /**
