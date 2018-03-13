@@ -60,7 +60,7 @@ public class CourseDetailActivity extends AppCompatActivity {
     private String courseFacePath;
     private String courseDescJsonStr;
     private String sectionsJsonStr;
-    private String commentJsonStr;
+    private String commentsJsonStr;
     private MyApplication myapp;
 
     @Override
@@ -155,7 +155,7 @@ public class CourseDetailActivity extends AppCompatActivity {
                         JSONObject respDataJson = new JSONObject(respDataStr);
                         courseDescJsonStr = respDataJson.optString("course");
                         sectionsJsonStr = respDataJson.optString("sections");
-                        commentJsonStr = respDataJson.optString("comments");
+                        commentsJsonStr = respDataJson.optString("comments");
 
 
                         JsonParser parser = new JsonParser();  //Json的解析类对象
@@ -166,7 +166,7 @@ public class CourseDetailActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 mFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),
-                                        courseDescJsonStr, sectionsJsonStr, commentJsonStr);
+                                        courseDescJsonStr, sectionsJsonStr, commentsJsonStr);
                                 //给ViewPager设置适配器
                                 attrViewPager.setAdapter(mFragmentPagerAdapter);
                                 //tablayout与Viewpager绑定

@@ -67,7 +67,7 @@ public class SectionsListViewAdapter extends BaseAdapter {
             zujian=(Zujian)convertView.getTag();
         }
         //绑定数据
-        zujian.title.setText("第 "+(position+1)+" 节:"+secList.get(position).getSecName());
+        zujian.title.setText((position+1)+"th: "+secList.get(position).getSecName());
 
         return convertView;
     }

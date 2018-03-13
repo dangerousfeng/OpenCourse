@@ -4,10 +4,40 @@
     android:layout_height="match_parent"
     tools:context="com.feng.opencourse.CourseCommentFragment">
 
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="course comment fragment" />
+        android:orientation="vertical">
 
+
+        <ListView
+            android:id="@+id/lv_comments"
+            android:layout_weight="1.0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_comment"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ems="20"
+                android:inputType="textPersonName"
+                android:text="Name"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btn_create_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="comment" />
+        </LinearLayout>
+    </LinearLayout>
 </FrameLayout>
+
+

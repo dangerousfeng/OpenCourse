@@ -17,14 +17,14 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
     private String[] mTitles = new String[]{"Desc", "Section", "Comment"};
     private String courseDescJsonStr;
     private String sectionsJsonStr;
-    private String commentJsonStr;
+    private String commentsJsonStr;
 
     public MyFragmentPagerAdapter(FragmentManager fm, String courseDescJsonStr,
-                                  String sectionsJsonStr, String commentJsonStr) {
+                                  String sectionsJsonStr, String commentsJsonStr) {
         super(fm);
         this.courseDescJsonStr = courseDescJsonStr;
         this.sectionsJsonStr = sectionsJsonStr;
-        this.commentJsonStr = commentJsonStr;
+        this.commentsJsonStr = commentsJsonStr;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         if (position == 2) {
             Fragment commentFragment = new CourseCommentFragment();
             Bundle commentBundle = new Bundle();
-            commentBundle.putString("commentJsonStr",commentJsonStr);
+            commentBundle.putString("commentsJsonStr",commentsJsonStr);
             commentFragment.setArguments(commentBundle);
             return commentFragment;
         }
