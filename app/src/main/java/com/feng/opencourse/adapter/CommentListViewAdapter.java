@@ -21,7 +21,6 @@ import com.alibaba.sdk.android.oss.model.GetObjectRequest;
 import com.alibaba.sdk.android.oss.model.GetObjectResult;
 import com.feng.opencourse.R;
 import com.feng.opencourse.entity.Comment;
-import com.feng.opencourse.entity.Course;
 import com.feng.opencourse.util.MyApplication;
 import com.feng.opencourse.util.ProperTies;
 
@@ -78,7 +77,6 @@ public class CommentListViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.i("========1=========","----------------------");
         CommentItem commentItem =null;
         if(convertView==null){
             commentItem =new CommentItem();
@@ -91,13 +89,20 @@ public class CommentListViewAdapter extends BaseAdapter {
             commentItem.content=(TextView)convertView.findViewById(R.id.tv_comment_content);
             commentItem.avatar = (ImageView) convertView.findViewById(R.id.iv_comment_avatar);
             commentItem.zan = (ImageView) convertView.findViewById(R.id.iv_zan);
+            commentItem.zan.setClickable(true);
+            CommentItem finalCommentItem = commentItem;
+            commentItem.zan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finalCommentItem.zanNum.setText(String.valueOf(Integer.valueOf((String) finalCommentItem.zanNum.getText())+1));
+                    finalCommentItem.zan.setImageResource(R.drawable.zan_finish);
+                    finalCommentItem.zan.setClickable(false);
+                }
+            });
             convertView.setTag(commentItem);
-            Log.i("=========2========","----------------------");
         }else{
-            Log.i("==========3=======","----------------------");
             commentItem =(CommentItem)convertView.getTag();
         }
-        Log.i("========4=========","----------------------");
         //绑定数据
         commentItem.uName.setText(commentList.get(position).getuName());
         commentItem.commentTime.setText(commentList.get(position).getCommentTime());
@@ -120,7 +125,6 @@ public class CommentListViewAdapter extends BaseAdapter {
             @Override
             public void onSuccess(GetObjectRequest request, GetObjectResult result) {
                 // 请求成功
-                Log.i("=======5==========","----------------------");
                 InputStream inputStream = result.getObjectContent();
                 Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
                 finalCommentItem.avatar.setImageBitmap(bitmap);
@@ -129,12 +133,10 @@ public class CommentListViewAdapter extends BaseAdapter {
             public void onFailure(GetObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
                 // 请求异常
                 if (clientExcepion != null) {
-                    Log.i("========6=========","----------------------");
                     // 本地异常如网络异常等
                     clientExcepion.printStackTrace();
                 }
                 if (serviceException != null) {
-                    Log.i("=======7==========","----------------------");
                     // 服务异常
                     Log.e("ErrorCode", serviceException.getErrorCode());
                     Log.e("RequestId", serviceException.getRequestId());
@@ -143,7 +145,6 @@ public class CommentListViewAdapter extends BaseAdapter {
                 }
             }
         });
-        Log.i("=====8============","----------------------");
         return convertView;
     }
 }

@@ -27,7 +27,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/ic_launcher"
+        android:src="@drawable/blackboard0"
         android:id="@+id/loading_iv"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"

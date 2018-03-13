@@ -149,7 +149,7 @@ public class HomeActivity extends AppCompatActivity
      */
     public void initData() {
         //初始化标题列表和图片
-        mImageTitles = new String[]{"这是一个好看的标题1","这是一个优美的标题2","这是一个快乐的标题3","这是一个开心的标题4"};
+        mImageTitles = new String[]{"titel_1","titel_2","titel_3","titel_4"};
         int[] imageRess = new int[]{R.drawable.t2,R.drawable.t3,R.drawable.t4,R.drawable.t5};
 
         //添加图片到图片列表里
