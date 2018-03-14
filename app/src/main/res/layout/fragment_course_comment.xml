@@ -28,7 +28,6 @@
                 android:layout_weight="1"
                 android:ems="20"
                 android:inputType="textPersonName"
-                android:text="Name"
                 android:textSize="14sp" />
 
             <Button

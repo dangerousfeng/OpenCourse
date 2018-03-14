@@ -90,15 +90,6 @@ public class CommentListViewAdapter extends BaseAdapter {
             commentItem.avatar = (ImageView) convertView.findViewById(R.id.iv_comment_avatar);
             commentItem.zan = (ImageView) convertView.findViewById(R.id.iv_zan);
             commentItem.zan.setClickable(true);
-            CommentItem finalCommentItem = commentItem;
-            commentItem.zan.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finalCommentItem.zanNum.setText(String.valueOf(Integer.valueOf((String) finalCommentItem.zanNum.getText())+1));
-                    finalCommentItem.zan.setImageResource(R.drawable.zan_finish);
-                    finalCommentItem.zan.setClickable(false);
-                }
-            });
             convertView.setTag(commentItem);
         }else{
             commentItem =(CommentItem)convertView.getTag();
@@ -108,6 +99,17 @@ public class CommentListViewAdapter extends BaseAdapter {
         commentItem.commentTime.setText(commentList.get(position).getCommentTime());
         commentItem.zanNum.setText(String.valueOf(commentList.get(position).getZanNum()));
         commentItem.content.setText(commentList.get(position).getContent());
+        CommentItem finalCommentItem = commentItem;
+        commentItem.zan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int addZan = Integer.valueOf((String) finalCommentItem.zanNum.getText()) + 1;
+                finalCommentItem.zanNum.setText(String.valueOf(addZan));
+                commentList.get(position).setZanNum(addZan);
+                finalCommentItem.zan.setImageResource(R.drawable.zan_finish);
+                finalCommentItem.zan.setClickable(false);
+            }
+        });
         String userId = commentList.get(position).getUserId();
 
 
@@ -120,7 +122,6 @@ public class CommentListViewAdapter extends BaseAdapter {
 
         GetObjectRequest get = new GetObjectRequest(proper.getProperty("OSS_BUCKET_NAME"),  proper.getProperty("AVATAR_KEY") + userId );
 
-        CommentItem finalCommentItem = commentItem;
         OSSAsyncTask task = oss.asyncGetObject(get, new OSSCompletedCallback<GetObjectRequest, GetObjectResult>(){
             @Override
             public void onSuccess(GetObjectRequest request, GetObjectResult result) {

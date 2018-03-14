@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#cccccc"
+    android:background="#ffffff"
     android:orientation="horizontal">
 
 
@@ -23,7 +23,7 @@
                 android:layout_width="104dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/ic_menu_camera" />
+                app:srcCompat="@drawable/user" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,14 +38,18 @@
                     <TextView
                         android:id="@+id/tv_comment_name"
                         android:layout_width="264dp"
-                        android:layout_height="20dp"
+                        android:layout_height="match_parent"
+                        android:textSize="16sp"
+                        android:gravity="top|left"
                         android:text="TextView" />
 
                     <TextView
                         android:id="@+id/tv_zan_num"
                         android:layout_width="46dp"
-                        android:layout_height="20dp"
-                        android:text="TextView" />
+                        android:layout_height="match_parent"
+                        android:textSize="16sp"
+                        android:gravity="top|center_horizontal"
+                        android:text="20" />
 
                     <ImageView
                         android:id="@+id/iv_zan"
@@ -59,7 +63,9 @@
                 <TextView
                     android:id="@+id/tv_comment_time"
                     android:layout_width="match_parent"
-                    android:layout_height="16dp"
+                    android:layout_height="match_parent"
+                    android:textSize="14sp"
+                    android:gravity="top|left"
                     android:text="TextView" />
             </LinearLayout>
 
@@ -70,6 +76,8 @@
             android:layout_width="match_parent"
             android:layout_height="24dp"
             android:layout_weight="1"
+            android:textSize="20sp"
+            android:gravity="bottom|left"
             android:text="TextView" />
     </LinearLayout>
 </LinearLayout>

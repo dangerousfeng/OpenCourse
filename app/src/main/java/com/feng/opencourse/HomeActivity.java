@@ -1,10 +1,13 @@
 package com.feng.opencourse;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,15 +27,27 @@ import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
+import com.alibaba.sdk.android.oss.ClientException;
+import com.alibaba.sdk.android.oss.OSS;
+import com.alibaba.sdk.android.oss.OSSClient;
+import com.alibaba.sdk.android.oss.ServiceException;
+import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
+import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
+import com.alibaba.sdk.android.oss.model.GetObjectRequest;
+import com.alibaba.sdk.android.oss.model.GetObjectResult;
 import com.feng.opencourse.adapter.CoursesListViewAdapter;
 import com.feng.opencourse.adapter.ViewPagerAdapter;
 import com.feng.opencourse.entity.Course;
 import com.feng.opencourse.entity.UserBase;
 import com.feng.opencourse.entity.UserData;
 import com.feng.opencourse.util.MyApplication;
+import com.feng.opencourse.util.ProperTies;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -49,10 +64,7 @@ public class HomeActivity extends AppCompatActivity
     private List<View> mDots;//小点
 
     private boolean isStop = false;//线程是否停止
-    private static int PAGER_TIOME = 5000;//间隔时间
-
-    // 在values文件假下创建了pager_image_ids.xml文件，并定义了4张轮播图对应的id，用于点击事件
-    private int[] imgae_ids = new int[]{R.id.pager_image1,R.id.pager_image2,R.id.pager_image3,R.id.pager_image4};
+    private static int PAGER_TIOME = 3000;//间隔时间
 
     private UserData userData;
     private UserBase userBase;
@@ -108,17 +120,21 @@ public class HomeActivity extends AppCompatActivity
         tv_userName.setText(userData.getNickname());
         tv_email.setText(userBase.getEmail());
 
-        // 轮播标题
-        initRollViewPager();
 
         // 课程列表
         JsonParser parser = new JsonParser();
-        JsonArray jsonArray = parser.parse(hotCoursesJsonStr).getAsJsonArray();
+        JsonArray hotJsonArray = parser.parse(hotCoursesJsonStr).getAsJsonArray();
+        JsonArray recommendJsonArray = parser.parse(recommendCoursesJsonStr).getAsJsonArray();
         Gson gson = new Gson();
         hotCourseList = new ArrayList<>();
-        for (JsonElement cour : jsonArray) {
+        recommendCourseList = new ArrayList<>();
+        for (JsonElement cour : hotJsonArray) {
             Course course = gson.fromJson(cour, Course.class);
             hotCourseList.add(course);
+        }
+        for (JsonElement cour : recommendJsonArray) {
+            Course course = gson.fromJson(cour, Course.class);
+            recommendCourseList.add(course);
         }
         lvHomeCourses.setAdapter(new CoursesListViewAdapter(myapp.getApplicationContext(),hotCourseList,myapp));
         lvHomeCourses.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -132,6 +148,9 @@ public class HomeActivity extends AppCompatActivity
                 startActivity(toCourseDetail);
             }
         } );
+
+        // 轮播标题
+        initRollViewPager();
     }
 
     /**
@@ -149,26 +168,55 @@ public class HomeActivity extends AppCompatActivity
      */
     public void initData() {
         //初始化标题列表和图片
-        mImageTitles = new String[]{"titel_1","titel_2","titel_3","titel_4"};
-        int[] imageRess = new int[]{R.drawable.t2,R.drawable.t3,R.drawable.t4,R.drawable.t5};
-
+        mImageTitles = new String[4];
         //添加图片到图片列表里
         mImageList = new ArrayList<>();
-        ImageView iv;
-        for (int i = 0; i < 4; i++) {
-            iv = new ImageView(this);
-            iv.setBackgroundResource(imageRess[i]);//设置图片
-            iv.setId(imgae_ids[i]);//顺便给图片设置id
+        for (int i = 0; i < recommendCourseList.size(); i++) {
+            mImageTitles[i] = recommendCourseList.get(i).getCourseName();
+            ImageView iv = new ImageView(this);
+            String courseId = recommendCourseList.get(i).getCourseId();
+
+            Properties proper = ProperTies.getProperties(myapp.getApplicationContext());
+            String endpoint = proper.getProperty("OSS_ENDPOINT");
+            OSS oss = new OSSClient(
+                    myapp.getApplicationContext(),
+                    endpoint,
+                    myapp.getReadOnlyOSSCredentialProvider());
+
+            GetObjectRequest get = new GetObjectRequest(proper.getProperty("OSS_BUCKET_NAME"), courseId + proper.getProperty("FACE_KEY"));
+
+            OSSAsyncTask task = oss.asyncGetObject(get, new OSSCompletedCallback<GetObjectRequest, GetObjectResult>(){
+                @Override
+                public void onSuccess(GetObjectRequest request, GetObjectResult result) {
+                    // 请求成功
+                    InputStream inputStream = result.getObjectContent();
+                    Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
+                    iv.setImageBitmap(bitmap);
+                }
+                @Override
+                public void onFailure(GetObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+                    // 请求异常
+                    if (clientExcepion != null) {
+                        // 本地异常如网络异常等
+                        clientExcepion.printStackTrace();
+                    }
+                    if (serviceException != null) {
+                        // 服务异常
+                        Log.e("ErrorCode", serviceException.getErrorCode());
+                        Log.e("RequestId", serviceException.getRequestId());
+                        Log.e("HostId", serviceException.getHostId());
+                        Log.e("RawMessage", serviceException.getRawMessage());
+                    }
+                }
+            });
+            iv.setId(i);//顺便给图片设置id
             iv.setOnClickListener(new HomeActivity.pagerImageOnClick());//设置图片点击事件
             mImageList.add(iv);
         }
-
         //添加轮播点
         LinearLayout linearLayoutDots = (LinearLayout) findViewById(R.id.lineLayout_dot);
         //其中fromResToDrawable()方法是我自定义的，目的是将资源文件转成Drawable
-        mDots = addDots(linearLayoutDots,fromResToDrawable(this,R.drawable.ic_dot_normal),mImageList.size());
-
-
+        mDots = addDots(linearLayoutDots,fromResToDrawable(this,R.drawable.ic_dot_normal),recommendCourseList.size());
     }
 
     //图片点击事件
@@ -176,20 +224,10 @@ public class HomeActivity extends AppCompatActivity
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.pager_image1:
-                    Toast.makeText(HomeActivity.this, "图片1被点击"+R.id.pager_image1, Toast.LENGTH_SHORT).show();
-                    break;
-                case R.id.pager_image2:
-                    Toast.makeText(HomeActivity.this, "图片2被点击", Toast.LENGTH_SHORT).show();
-                    break;
-                case R.id.pager_image3:
-                    Toast.makeText(HomeActivity.this, "图片3被点击", Toast.LENGTH_SHORT).show();
-                    break;
-                case R.id.pager_image4:
-                    Toast.makeText(HomeActivity.this, "图片4被点击", Toast.LENGTH_SHORT).show();
-                    break;
-            }
+            String clickCourseId = recommendCourseList.get(v.getId()).getCourseId();
+            Intent toCourseDetail = new Intent(myapp.getApplicationContext(), CourseDetailActivity.class);
+            toCourseDetail.putExtra("courseId",clickCourseId);
+            startActivity(toCourseDetail);
         }
     }
     /**
@@ -351,21 +389,24 @@ public class HomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_cellection) {
             Intent to_second = new Intent();
             to_second.setClass(HomeActivity.this,PlaySectionActivity.class);
             startActivity(to_second);
 
-        } else if (id == R.id.nav_gallery) {
-            Intent toCreateCourse = new Intent();
-            toCreateCourse.putExtra("teacherId",myapp.getUserId());
-            toCreateCourse.setClass(HomeActivity.this,TeacherHomeActivity.class);
-            startActivity(toCreateCourse);
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_type) {
+
+        } else if (id == R.id.nav_record) {
             Intent toCourseDetail = new Intent();
             toCourseDetail.setClass(HomeActivity.this,CourseDetailActivity.class);
             startActivity(toCourseDetail);
         } else if (id == R.id.nav_manage) {
+            Intent toCreateCourse = new Intent();
+            toCreateCourse.putExtra("teacherId",myapp.getUserId());
+            toCreateCourse.setClass(HomeActivity.this,TeacherHomeActivity.class);
+            startActivity(toCreateCourse);
+
+        } else if (id == R.id.nav_user_center){
 
         } else if (id == R.id.nav_share) {
 
