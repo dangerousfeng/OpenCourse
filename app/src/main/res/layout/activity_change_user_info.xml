@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_change_user_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.feng.opencourse.ChangeUserInfoActivity"
+    android:weightSum="36">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/user"
+        android:id="@+id/iv_change_user_info_avatar"
+        android:layout_weight="30.2" />
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="59dp">
+
+        <TextView
+            android:text="Nickname"
+            android:textSize="22sp"
+            android:gravity="center_vertical|left"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/textView1" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPersonName"
+            android:ems="20"
+            android:id="@+id/et_change_user_info_nickname"
+            android:layout_weight="0.58" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="59dp">
+
+        <TextView
+            android:text="Name"
+            android:textSize="22sp"
+            android:gravity="center_vertical|left"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/textView2" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPersonName"
+            android:ems="20"
+            android:id="@+id/et_change_user_info_realname"
+            android:layout_weight="0.58" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="59dp">
+
+        <TextView
+            android:text="Phone"
+            android:textSize="22sp"
+            android:gravity="center_vertical|left"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/textView3" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPersonName"
+            android:ems="20"
+            android:id="@+id/et_change_user_info_phone"
+            android:layout_weight="0.58" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="59dp">
+
+        <TextView
+            android:text="Email"
+            android:textSize="22sp"
+            android:gravity="center_vertical|left"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/textView4" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPersonName"
+            android:ems="20"
+            android:id="@+id/et_change_user_info_email"
+            android:layout_weight="0.58" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="59dp">
+
+        <TextView
+            android:text="Password"
+            android:textSize="22sp"
+            android:gravity="center_vertical|left"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/textView" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPassword"
+            android:ems="20"
+            android:id="@+id/et_change_user_info_password"
+            android:layout_weight="0.58" />
+
+
+    </LinearLayout>
+
+    <Button
+        android:layout_weight="0.8"
+        android:text="Change"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_change_user_info" />
+</LinearLayout>

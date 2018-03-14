@@ -74,6 +74,7 @@ public class HomeActivity extends AppCompatActivity
     private ListView lvHomeCourses;
     private ArrayList<Course> hotCourseList;
     private ArrayList<Course> recommendCourseList;
+    private ImageView iv_avatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +104,9 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
-        ImageView iv_avatar = (ImageView) headerView.findViewById(R.id.iv_avatar);
+        headerView.setOnClickListener(headerViewListener);
+        iv_avatar = (ImageView) headerView.findViewById(R.id.iv_avatar);
         TextView tv_userName = (TextView) headerView.findViewById(R.id.tv_userName);
-        System.out.println("===================="+tv_userName.getText());
         TextView tv_email = (TextView) headerView.findViewById(R.id.tv_email);
 
         // 全局获取jwt过来
@@ -153,6 +154,8 @@ public class HomeActivity extends AppCompatActivity
 
         // 轮播标题
         initRollViewPager();
+        // 初始化数据
+        init();
     }
 
     /**
@@ -424,4 +427,51 @@ public class HomeActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    private void init() {
+        Properties proper = ProperTies.getProperties(myapp.getApplicationContext());
+        String endpoint = proper.getProperty("OSS_ENDPOINT");
+        OSS oss = new OSSClient(
+                myapp.getApplicationContext(),
+                endpoint,
+                myapp.getReadOnlyOSSCredentialProvider());
+
+        GetObjectRequest get = new GetObjectRequest(proper.getProperty("OSS_BUCKET_NAME"), proper.getProperty("AVATAR_KEY") + userBase.getUserId() );
+
+        OSSAsyncTask task = oss.asyncGetObject(get, new OSSCompletedCallback<GetObjectRequest, GetObjectResult>(){
+            @Override
+            public void onSuccess(GetObjectRequest request, GetObjectResult result) {
+                // 请求成功
+                InputStream inputStream = result.getObjectContent();
+                Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
+                iv_avatar.setImageBitmap(bitmap);
+            }
+            @Override
+            public void onFailure(GetObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+                // 请求异常
+                if (clientExcepion != null) {
+                    // 本地异常如网络异常等
+                    clientExcepion.printStackTrace();
+                }
+                if (serviceException != null) {
+                    // 服务异常
+                    Log.e("ErrorCode", serviceException.getErrorCode());
+                    Log.e("RequestId", serviceException.getRequestId());
+                    Log.e("HostId", serviceException.getHostId());
+                    Log.e("RawMessage", serviceException.getRawMessage());
+                }
+            }
+        });
+    }
+    View.OnClickListener headerViewListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent=new Intent();
+            intent.setClass(HomeActivity.this,ChangeUserInfoActivity.class);
+            Bundle bundle=new Bundle();
+            bundle.putSerializable("userData",userData);
+            bundle.putSerializable("userBase",userBase);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+    };
 }

@@ -8,14 +8,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.feng.opencourse.adapter.PlayRecordListViewAdapter;
+import com.feng.opencourse.entity.PlayRecord;
 import com.feng.opencourse.util.MyApplication;
 import com.feng.opencourse.util.PermissionsChecker;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import cn.jzvd.JZVideoPlayerStandard;
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static com.feng.opencourse.util.HttpUtil.getRespData;
 
 public class CourseDescFragment extends Fragment {
 
@@ -70,8 +86,29 @@ public class CourseDescFragment extends Fragment {
     View.OnClickListener collectionListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-        // 请求服务 添加收藏记录
+            // 请求服务 添加收藏记录
             fabCollectionCourse.setImageResource(R.drawable.heart_red);
+            JSONObject json = new JSONObject();
+            try {
+                json.put("ActionId", 206);
+                json.put("JWT", myapp.getJWT());
+                json.put("userId", myapp.getUserId());
+                json.put("courseId",courseId);
+                String req = json.toString();
+                RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), req);
+                com.feng.opencourse.util.HttpUtil.sendAsyncRequest(body, new okhttp3.Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Toast.makeText(myapp.getApplicationContext(), "获取播放记录失败", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     };
 }

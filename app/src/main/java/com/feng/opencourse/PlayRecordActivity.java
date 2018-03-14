@@ -3,6 +3,7 @@ package com.feng.opencourse;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -62,7 +63,7 @@ public class PlayRecordActivity extends AppCompatActivity {
 
         JSONObject json = new JSONObject();
         try {
-            json.put("ActionId", 999999999);
+            json.put("ActionId", 210);
             json.put("JWT", myapp.getJWT());
             json.put("userId", myapp.getUserId());
             String req = json.toString();
@@ -95,7 +96,6 @@ public class PlayRecordActivity extends AppCompatActivity {
                             PlayRecord playRecord = gson.fromJson(record, PlayRecord.class);
                             playRecordList.add(playRecord);
                         }
-
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

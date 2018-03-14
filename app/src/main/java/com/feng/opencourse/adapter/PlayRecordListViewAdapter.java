@@ -78,7 +78,7 @@ public class PlayRecordListViewAdapter extends BaseAdapter{
         if(convertView==null){
             recordItem =new PlayRecordListViewAdapter.RecordItem();
             //获得组件，实例化组件
-            convertView=layoutInflater.inflate(R.layout.listview_item_course,null);
+            convertView=layoutInflater.inflate(R.layout.listview_item_play_record,null);
 
             recordItem.recordTime = (TextView) convertView.findViewById(R.id.tv_item_record_time);
             recordItem.title=(TextView)convertView.findViewById(R.id.tv_item_record_course_name);
@@ -91,7 +91,6 @@ public class PlayRecordListViewAdapter extends BaseAdapter{
         recordItem.title.setText(playRecordList.get(position).getCourseName());
         recordItem.recordTime.setText(playRecordList.get(position).getPlayTime());
         String courseId = playRecordList.get(position).getCourseId();
-
         Properties proper = ProperTies.getProperties(myapp.getApplicationContext());
         String endpoint = proper.getProperty("OSS_ENDPOINT");
         OSS oss = new OSSClient(

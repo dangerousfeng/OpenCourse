@@ -61,7 +61,7 @@ public class CollectionActivity extends AppCompatActivity {
     private void initData() {
         JSONObject json = new JSONObject();
         try {
-            json.put("ActionId", 99999999);
+            json.put("ActionId", 209);
             json.put("JWT", myapp.getJWT());
             json.put("userId", myapp.getUserId());
             String req = json.toString();
