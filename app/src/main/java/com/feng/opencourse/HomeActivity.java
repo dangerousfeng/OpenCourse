@@ -393,10 +393,9 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_cellection) {
-            Intent to_second = new Intent();
-            to_second.setClass(HomeActivity.this,PlaySectionActivity.class);
-            startActivity(to_second);
-
+            Intent toCollection = new Intent();
+            toCollection.setClass(HomeActivity.this,CollectionActivity.class);
+            startActivity(toCollection);
         } else if (id == R.id.nav_type) {
 
         } else if (id == R.id.nav_record) {
@@ -412,7 +411,9 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_user_center){
 
         } else if (id == R.id.nav_share) {
-
+            Intent to_second = new Intent();
+            to_second.setClass(HomeActivity.this,PlaySectionActivity.class);
+            startActivity(to_second);
         } else if (id == R.id.nav_send) {
             Intent toCourseDetail = new Intent();
             toCourseDetail.setClass(HomeActivity.this,CourseDetailActivity.class);
