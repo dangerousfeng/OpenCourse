@@ -2,11 +2,13 @@ package com.feng.opencourse;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -14,10 +16,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.sdk.android.oss.ClientException;
+import com.alibaba.sdk.android.oss.OSS;
+import com.alibaba.sdk.android.oss.OSSClient;
+import com.alibaba.sdk.android.oss.ServiceException;
+import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
+import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
+import com.alibaba.sdk.android.oss.model.GetObjectRequest;
+import com.alibaba.sdk.android.oss.model.GetObjectResult;
 import com.feng.opencourse.adapter.CoursesListViewAdapter;
 import com.feng.opencourse.entity.Course;
 import com.feng.opencourse.entity.Section;
 import com.feng.opencourse.util.MyApplication;
+import com.feng.opencourse.util.ProperTies;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -27,7 +38,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -39,6 +52,8 @@ import static com.feng.opencourse.util.HttpUtil.getRespData;
 public class TeacherHomeActivity extends AppCompatActivity {
 
     // // TODO: 2018/3/7 0007 服务端下发teacher info 并绑定数据;item中绑定face image; 
+    private ImageView ivTeacherAvatar;
+    private TextView tvTeacherName;
     private TextView tvTeacherInfo;
     private ListView lvCourses;
     private String teacherId;
@@ -53,6 +68,8 @@ public class TeacherHomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_teacher_home);
 
         myapp = (MyApplication) getApplication();
+        ivTeacherAvatar = (ImageView) findViewById(R.id.iv_teacher_avatar);
+        tvTeacherName = (TextView) findViewById(R.id.tv_teacher_name);
         tvTeacherInfo = (TextView) findViewById(R.id.tv_teacher_info);
         lvCourses = (ListView) findViewById(R.id.lv_teacher_courses);
         FloatingActionButton fabCreateCourse = (FloatingActionButton) findViewById(R.id.fab_create_course);
@@ -125,9 +142,8 @@ public class TeacherHomeActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 lvCourses.setAdapter(new CoursesListViewAdapter(myapp.getApplicationContext(),courseList,myapp));
-
-                                String tvShow = teacherInfoJson.optString("userName") + "\n" +
-                                        "Email: " + teacherInfoJson.optString("email") + "\n";
+                                tvTeacherName.setText(teacherInfoJson.optString("userName"));
+                                String tvShow = "Email: " + teacherInfoJson.optString("email") + "\n";
                                 tvTeacherInfo.setText(tvShow);
                             }
                         });
@@ -141,7 +157,41 @@ public class TeacherHomeActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
 
+
+        Properties proper = ProperTies.getProperties(myapp.getApplicationContext());
+        String endpoint = proper.getProperty("OSS_ENDPOINT");
+        OSS oss = new OSSClient(
+                myapp.getApplicationContext(),
+                endpoint,
+                myapp.getReadOnlyOSSCredentialProvider());
+
+        GetObjectRequest get = new GetObjectRequest(proper.getProperty("OSS_BUCKET_NAME"), proper.getProperty("AVATAR_KEY") + teacherId );
+
+        OSSAsyncTask task = oss.asyncGetObject(get, new OSSCompletedCallback<GetObjectRequest, GetObjectResult>(){
+            @Override
+            public void onSuccess(GetObjectRequest request, GetObjectResult result) {
+                // 请求成功
+                InputStream inputStream = result.getObjectContent();
+                Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
+                ivTeacherAvatar.setImageBitmap(bitmap);
+            }
+            @Override
+            public void onFailure(GetObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+                // 请求异常
+                if (clientExcepion != null) {
+                    // 本地异常如网络异常等
+                    clientExcepion.printStackTrace();
+                }
+                if (serviceException != null) {
+                    // 服务异常
+                    Log.e("ErrorCode", serviceException.getErrorCode());
+                    Log.e("RequestId", serviceException.getRequestId());
+                    Log.e("HostId", serviceException.getHostId());
+                    Log.e("RawMessage", serviceException.getRawMessage());
+                }
+            }
+        });
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.feng.opencourse.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.OSS;
@@ -19,14 +21,30 @@ import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
 import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
 import com.alibaba.sdk.android.oss.model.GetObjectRequest;
 import com.alibaba.sdk.android.oss.model.GetObjectResult;
+import com.alibaba.sdk.android.oss.model.PutObjectRequest;
+import com.alibaba.sdk.android.oss.model.PutObjectResult;
+import com.feng.opencourse.CourseDetailActivity;
+import com.feng.opencourse.CreateCourseActivity;
 import com.feng.opencourse.R;
 import com.feng.opencourse.entity.Comment;
+import com.feng.opencourse.util.HttpUtil;
 import com.feng.opencourse.util.MyApplication;
 import com.feng.opencourse.util.ProperTies;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
+
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static com.feng.opencourse.util.HttpUtil.getRespData;
 
 /**
  * Created by Administrator on 2018/3/13.
@@ -103,11 +121,32 @@ public class CommentListViewAdapter extends BaseAdapter {
         commentItem.zan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int addZan = Integer.valueOf((String) finalCommentItem.zanNum.getText()) + 1;
-                finalCommentItem.zanNum.setText(String.valueOf(addZan));
-                commentList.get(position).setZanNum(addZan);
-                finalCommentItem.zan.setImageResource(R.drawable.zan_finish);
-                finalCommentItem.zan.setClickable(false);
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("ActionId", 207);
+                    json.put("JWT", myapp.getJWT());
+                    json.put("userId", myapp.getUserId());
+                    json.put("commentId", commentList.get(position).getCommentId());
+                    String req = json.toString();
+                    RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), req);
+                    HttpUtil.sendAsyncRequest(body, new okhttp3.Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            //todo 点赞服务端出错
+                            int addZan = Integer.valueOf((String) finalCommentItem.zanNum.getText()) + 1;
+                            finalCommentItem.zanNum.setText(String.valueOf(addZan));
+                            commentList.get(position).setZanNum(addZan);
+                            finalCommentItem.zan.setImageResource(R.drawable.zan_finish);
+                            finalCommentItem.zan.setClickable(false);
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
         String userId = commentList.get(position).getUserId();

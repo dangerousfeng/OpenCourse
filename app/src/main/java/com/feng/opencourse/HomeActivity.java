@@ -400,9 +400,9 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_type) {
 
         } else if (id == R.id.nav_record) {
-            Intent toCourseDetail = new Intent();
-            toCourseDetail.setClass(HomeActivity.this,CourseDetailActivity.class);
-            startActivity(toCourseDetail);
+            Intent toPlayRecord = new Intent();
+            toPlayRecord.setClass(HomeActivity.this,PlayRecordActivity.class);
+            startActivity(toPlayRecord);
         } else if (id == R.id.nav_manage) {
             Intent toCreateCourse = new Intent();
             toCreateCourse.putExtra("teacherId",myapp.getUserId());
@@ -414,7 +414,9 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
-
+            Intent toCourseDetail = new Intent();
+            toCourseDetail.setClass(HomeActivity.this,CourseDetailActivity.class);
+            startActivity(toCourseDetail);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

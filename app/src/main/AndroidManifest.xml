@@ -45,7 +45,9 @@
             android:theme="@style/AppTheme.NoActionBar.Permissions" />
         <activity android:name=".CourseDetailActivity" />
         <activity android:name=".TeacherHomeActivity" />
-        <activity android:name=".CreateSectionActivity"></activity>
+        <activity android:name=".CreateSectionActivity" />
+        <activity android:name=".PlayRecordActivity" />
+        <activity android:name=".CollectionActivity"></activity>
     </application>
 
 </manifest>
