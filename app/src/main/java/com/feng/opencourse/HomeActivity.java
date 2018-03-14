@@ -53,6 +53,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import static com.feng.opencourse.util.PictureUtil.zoomBitmap;
+
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private ViewPager mViewPager;
@@ -126,8 +128,8 @@ public class HomeActivity extends AppCompatActivity
         JsonArray hotJsonArray = parser.parse(hotCoursesJsonStr).getAsJsonArray();
         JsonArray recommendJsonArray = parser.parse(recommendCoursesJsonStr).getAsJsonArray();
         Gson gson = new Gson();
-        hotCourseList = new ArrayList<>();
-        recommendCourseList = new ArrayList<>();
+        hotCourseList = new ArrayList<>();   //最热20课程
+        recommendCourseList = new ArrayList<>(); //推荐4课程
         for (JsonElement cour : hotJsonArray) {
             Course course = gson.fromJson(cour, Course.class);
             hotCourseList.add(course);
@@ -190,7 +192,8 @@ public class HomeActivity extends AppCompatActivity
                 public void onSuccess(GetObjectRequest request, GetObjectResult result) {
                     // 请求成功
                     InputStream inputStream = result.getObjectContent();
-                    Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
+                    Bitmap originalBitmap= BitmapFactory.decodeStream(inputStream);
+                    Bitmap bitmap = zoomBitmap(originalBitmap,iv.getWidth(), iv.getHeight());
                     iv.setImageBitmap(bitmap);
                 }
                 @Override
