@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 public class UserBase implements Serializable {
     private String userId="";
     private String userName="";
-    private int phone;
+    private int phone = 0;
     private String email="";
     private String password="";
     private String itime="";

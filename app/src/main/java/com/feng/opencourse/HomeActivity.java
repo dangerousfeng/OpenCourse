@@ -400,7 +400,9 @@ public class HomeActivity extends AppCompatActivity
             toCollection.setClass(HomeActivity.this,CollectionActivity.class);
             startActivity(toCollection);
         } else if (id == R.id.nav_type) {
-
+            Intent toTypological = new Intent();
+            toTypological.setClass(HomeActivity.this,TypologicalActivity.class);
+            startActivity(toTypological);
         } else if (id == R.id.nav_record) {
             Intent toPlayRecord = new Intent();
             toPlayRecord.setClass(HomeActivity.this,PlayRecordActivity.class);
@@ -410,9 +412,14 @@ public class HomeActivity extends AppCompatActivity
             toCreateCourse.putExtra("teacherId",myapp.getUserId());
             toCreateCourse.setClass(HomeActivity.this,TeacherHomeActivity.class);
             startActivity(toCreateCourse);
-
         } else if (id == R.id.nav_user_center){
-
+            Intent toChangerUserInfo = new Intent();
+            toChangerUserInfo.setClass(HomeActivity.this,ChangeUserInfoActivity.class);
+            Bundle bundle=new Bundle();
+            bundle.putSerializable("userData",userData);
+            bundle.putSerializable("userBase",userBase);
+            toChangerUserInfo.putExtras(bundle);
+            startActivity(toChangerUserInfo);
         } else if (id == R.id.nav_share) {
             Intent to_second = new Intent();
             to_second.setClass(HomeActivity.this,PlaySectionActivity.class);

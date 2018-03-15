@@ -48,7 +48,9 @@
         <activity android:name=".CreateSectionActivity" />
         <activity android:name=".PlayRecordActivity" />
         <activity android:name=".CollectionActivity" />
-        <activity android:name=".ChangeUserInfoActivity"></activity>
+        <activity android:name=".ChangeUserInfoActivity" />
+        <activity android:name=".TypologicalActivity" />
+        <activity android:name=".ClassifyActivity"></activity>
     </application>
 
 </manifest>

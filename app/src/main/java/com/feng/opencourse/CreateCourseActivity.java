@@ -237,6 +237,7 @@ public class CreateCourseActivity extends AppCompatActivity {
                                 filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
                         cursor.moveToFirst();
                         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        Log.i("==========",String.valueOf(columnIndex));
                         courseFacePath = cursor.getString(columnIndex);  //获取照片路径
                         cursor.close();
                         Bitmap originalBitmap = BitmapFactory.decodeFile(courseFacePath);
