@@ -282,7 +282,7 @@ public class HomeActivity extends AppCompatActivity
     private void setFirstLocation() {
         mTvPagerTitle.setText(mImageTitles[previousPosition]);
         // 把ViewPager设置为默认选中Integer.MAX_VALUE / t2，从十几亿次开始轮播图片，达到无限循环目的;
-        int m = (Integer.MAX_VALUE / 2) % mImageList.size();
+        int m = (10 / 2) % mImageList.size();
         int currentPosition = Integer.MAX_VALUE / 2 - m;
         mViewPager.setCurrentItem(currentPosition);
     }

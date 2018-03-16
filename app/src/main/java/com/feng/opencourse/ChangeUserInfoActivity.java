@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -66,6 +67,7 @@ public class ChangeUserInfoActivity extends AppCompatActivity {
     static final String[] PERMISSIONS = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+    private Toolbar mTToolbar;
     private PermissionsChecker mPermissionsChecker; // 权限检测器
     private static final int PERMISSIONS_REQUEST_CODE = 2;
     private final int IMAGE_REQUEST_CODE = 1;
@@ -77,6 +79,7 @@ public class ChangeUserInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_change_user_info);
 
         myapp = (MyApplication) getApplication();
+        setSupportActionBar(mTToolbar);
         mPermissionsChecker = new PermissionsChecker(this);
 
         ivAvatar = (ImageView) findViewById(R.id.iv_change_user_info_avatar);
@@ -87,6 +90,7 @@ public class ChangeUserInfoActivity extends AppCompatActivity {
         etPassword = (EditText) findViewById(R.id.et_change_user_info_password);
         btnChange = (Button) findViewById(R.id.btn_change_user_info);
         btnChange.setOnClickListener(changeOnClickListener);
+        mTToolbar = (Toolbar) findViewById(R.id.main_t_toolbar);
 
         Bundle bundle=this.getIntent().getExtras();
         userBase = (UserBase) bundle.getSerializable("userBase");
@@ -98,7 +102,7 @@ public class ChangeUserInfoActivity extends AppCompatActivity {
             etName.setText(userBase.getUserName());
         }
         if (userBase.getPhone()!=0){
-            etPhone.setText(userBase.getPhone());
+            etPhone.setText(String.valueOf(userBase.getPhone()));
         }
         if (!userBase.getEmail().isEmpty()){
             etEmail.setText(userBase.getEmail());
@@ -160,11 +164,11 @@ public class ChangeUserInfoActivity extends AppCompatActivity {
     View.OnClickListener avatarOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-//            Intent intent = new Intent(
-//                    Intent.ACTION_PICK,
-//                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            Intent intent=new Intent("android.intent.action.GET_CONTENT");
-            intent.setType("image/*");
+            Intent intent = new Intent(
+                    Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//            Intent intent=new Intent("android.intent.action.GET_CONTENT");
+//            intent.setType("image/*");
             startActivityForResult(intent, IMAGE_REQUEST_CODE);
         }
     };

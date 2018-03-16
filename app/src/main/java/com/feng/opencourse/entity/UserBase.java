@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 public class UserBase implements Serializable {
     private String userId="";
     private String userName="";
-    private int phone = 0;
+    private long phone = 0;
     private String email="";
     private String password="";
     private String itime="";
@@ -21,7 +21,7 @@ public class UserBase implements Serializable {
     public UserBase() {
     }
 
-    public UserBase(String userId, String userName, int phone, String email, String password, String itime, Boolean superRole) {
+    public UserBase(String userId, String userName, long phone, String email, String password, String itime, Boolean superRole) {
         this.userId = userId;
         this.userName = userName;
         this.phone = phone;
@@ -47,11 +47,11 @@ public class UserBase implements Serializable {
         this.userName = userName;
     }
 
-    public int getPhone() {
+    public long getPhone() {
         return phone;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(long phone) {
         this.phone = phone;
     }
 

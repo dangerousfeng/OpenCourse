@@ -239,6 +239,7 @@ public class CreateCourseActivity extends AppCompatActivity {
                         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                         Log.i("==========",String.valueOf(columnIndex));
                         courseFacePath = cursor.getString(columnIndex);  //获取照片路径
+                        Log.i("==========path",courseFacePath);
                         cursor.close();
                         Bitmap originalBitmap = BitmapFactory.decodeFile(courseFacePath);
                         //Bitmap bitmap = zoomBitmap(originalBitmap,ivCourseFace.getWidth(), ivCourseFace.getHeight());

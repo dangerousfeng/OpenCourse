@@ -121,6 +121,11 @@ public class CommentListViewAdapter extends BaseAdapter {
         commentItem.zan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int addZan = Integer.valueOf((String) finalCommentItem.zanNum.getText()) + 1;
+                finalCommentItem.zanNum.setText(String.valueOf(addZan));
+                commentList.get(position).setZanNum(addZan);
+                finalCommentItem.zan.setImageResource(R.drawable.zan_finish);
+                finalCommentItem.zan.setClickable(false);
                 JSONObject json = new JSONObject();
                 try {
                     json.put("ActionId", 207);
@@ -137,12 +142,9 @@ public class CommentListViewAdapter extends BaseAdapter {
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
                             //todo 点赞服务端出错
-                            int addZan = Integer.valueOf((String) finalCommentItem.zanNum.getText()) + 1;
-                            finalCommentItem.zanNum.setText(String.valueOf(addZan));
                             commentList.get(position).setZanNum(addZan);
-                            finalCommentItem.zan.setImageResource(R.drawable.zan_finish);
-                            finalCommentItem.zan.setClickable(false);
                         }
+
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();
